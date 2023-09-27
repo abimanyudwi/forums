@@ -1,0 +1,95 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+
+<main id="main">
+{% comment %} 
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li>Profil</li>
+      </ol>
+      <h2>Profil</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs --> {% endcomment %}
+
+  <!-- ======= Team Section ======= -->
+  <section class="gradient-custom-2 team" id="team">
+    <div class="container py-5" style="height:100%">
+      <div class="row d-flex justify-content-center align-items-center h-1000">
+        <div class="col col-lg-9 col-xl-12">
+          <div class="card">
+            <div class="rounded-top text-white d-flex flex-row" style="background-color: #303179; height:75px;">
+              <div class="ms-3 mt-4" >
+                <h5>Artikel dengan terjemahan siap dinilai ({{num_post}})</h5>
+                <p class="fst-italic"></p>
+                
+              </div>
+            </div>
+            
+            <section id="portfolio" class="portfolio">
+              <div class="container ">
+                <div class="row portfolio-container ">
+                  <div class="portfolio-item filter-evaluasi ps-5 pe-5">
+                    <div class="table-responsive mt-4">
+                     
+                      <table class="table" id="table-verifikator-request">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Judul</th>
+                            <th scope="col">Portal</th>
+                            <th scope="col">Updated</th>
+                            <th scope="col">Aksi</th>
+                            
+                            {% comment %} <th scope="col">Poin</th>
+                            <th scope="col">Bergabung</th>
+                             <th scope="col">Syarat Verifikator</th> {% endcomment %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+                          {% for post in post %}
+                          <tr>
+                              <td>{{forloop.counter}}</td>
+                              <td><a href="{{post.get_url}}">{{post.judul|title}}</a></td>
+                              <td>{{post.portal}}</td>
+                              <td>{{post.updated}}</td>
+                              
+                              <td> 
+                                <a href="{{post.get_url}}" class="btn btn-sm btn-success">View</a>
+                                
+                              </td>
+                             
+                             
+                          </tr>
+                          {% endfor %}
+                          
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                      
+                    
+                  </div>
+          
+                </div>
+          
+              </div>
+            </section><!-- End Portfolio Section -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+
+</main><!-- End #main -->
+
+{% endblock content %}

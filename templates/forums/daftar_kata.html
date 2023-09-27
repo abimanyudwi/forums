@@ -1,0 +1,83 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+
+<main id="main">
+{% comment %} 
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li>Profil</li>
+      </ol>
+      <h2>Profil</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs --> {% endcomment %}
+
+  <!-- ======= Team Section ======= -->
+  <section class="h-1000 gradient-custom-2 team" id="team">
+    <div class="container py-5 h-1000">
+      <div class="row d-flex justify-content-center align-items-center h-1000">
+        <div class="col col-lg-9 col-xl-12">
+          <div class="card">
+            <div class="rounded-top text-white d-flex flex-row" style="background-color: #303179; height:75px;">
+              <div class="ms-3 mt-4" >
+                <h5>Daftar Kata Bahasa Manado</h5>
+                <p class="fst-italic"></p>
+                
+              </div>
+            </div>
+            
+            <section id="portfolio" class="portfolio">
+              <div class="container ">
+                <div class="row portfolio-container ">
+                  <div class="portfolio-item filter-evaluasi ps-5 pe-5">
+                    
+                    <div class="table-responsive">
+                      <strong>
+                        <p class="text-md text-muted mt-2">Kata Bahasa Manado ({{num_kata}})</p>
+                      </strong>
+                      
+                      <table class="table" id="table-kata">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Kata</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+                          {% for kata in kata %}
+                          <tr>
+                              <td>{{forloop.counter}}</td>
+                              <td>{{kata.kata|title}}</td>
+                          </tr>
+                          {% endfor %}
+                          
+                        </tbody>
+                      </table>
+                      
+                    </div>
+                      
+                    
+                  </div>
+          
+                </div>
+          
+              </div>
+            </section><!-- End Portfolio Section -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</main><!-- End #main -->
+
+{% endblock content %}

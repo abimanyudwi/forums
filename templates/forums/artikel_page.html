@@ -1,0 +1,38 @@
+          
+      {% load el_pagination_tags %}
+      {% load hitcount_tags %}
+
+        {% paginate 1 trans %}
+          {% for trns in trans %}
+                          
+          {% if userid.role == "ADMIN" %}
+
+            <tr>
+              <td><span class="ms-2"> <a href="{{trns.get_url}}">{{trns.judul|safe}}</a></span> </td>
+              <td>
+                Dilihat :  <strong>{% get_hit_count for trns %} Kali</strong><br>
+                Translasi : <strong>{{trns.num_translasi}} Translasi </strong>
+              </td>
+              <td>
+                Terakhir Diterjemahkan : <br><strong>{{trns.last_trans.updated|date}}</strong> <br>
+                Oleh : <strong>{{trns.last_trans.user.fullname|title}}</strong>
+              </td>
+              <td>
+                {% if trns.status == True %}
+                      <span class="badge rounded-pill text-bg-success">Open</span>
+                      {% else %}
+                      <span class="badge rounded-pill text-bg-danger">Closed</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td><a href="{% url 'unggahan' trns|slugify %}">{{trns|safe}}</a></td>
+              
+              
+            </tr>
+          {% endif %}
+        
+        
+        {% endfor %}
+      {% show_more %}

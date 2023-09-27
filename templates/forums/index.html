@@ -1,0 +1,113 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+
+  <main id="main">
+      <!-- ======= Title Section ======= -->
+      <!-- ======= Hero Section ======= -->
+  <section id="hero">
+    <div class="hero-container " >
+      <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+        {% comment %} <ol class="carousel-indicators" id="hero-carousel-indicators"></ol> {% endcomment %}
+
+        <div class="carousel-inner" role="listbox">
+
+          <!-- Slide 1 -->
+          <div class="carousel-item active" style="background:url({% static "assets/img/slide/slide-32.jpg" %})">
+            <div class="carousel-container">
+              <div class="carousel-content">
+                <h2 class="animate__animated animate__fadeInDown">{{profiles}}Selamat Datang Di <br> <span>Forum Translasi Bahasa Indonesia - Manado</span> </h2>
+                
+                <a href="#stats" class="btn-get-started animate__animated animate__fadeInUp">Mulai</a>
+              </div>
+            </div>
+          </div>
+          
+          {% for user in profiles %}
+            {{user.fullname|title}}
+          {% endfor %}
+            
+        </div>
+        <div class="stats" id="stats" style="display: hidden;"><hr hidden></div>
+      </div>
+    </div>
+  </section><!-- End Hero -->
+      
+    <section id="featured" class="featured">
+      <div class="container">
+        
+        <div class="row justify-content-center">
+          <div class="col-lg-6 mb-4" id="forum">
+            <div class="icon-box" style="border-top: 10px solid #F5CAC2"> 
+          
+              <h3>Forum</h3>
+              
+              <p>Total Unggahan : <span style="color:#e96b56">{{num_post}}</span></p>
+              <p>Total Terjemahan : <span style="color:#e96b56">{{num_trans}}</span></p>
+              <p>Unggahan Dibuka : <span style="color:#e96b56">{{num_open}}</span></p>
+              <p>Unggahan Ditutup : <span style="color:#e96b56">{{num_closed}}</span></p>
+              <p>Unggahan Diterjemahkan : <span style="color:#e96b56">{{translated}}</span></p>
+              <p>Unggahan Belum Diterjemahkan : <span style="color:#e96b56">{{not_translated}} </span></p>
+              <p>Unggahan Terakhir : <br>
+                
+                {% if post %}
+                  <span style="color:#e96b56"><a href="{{last_post.get_url}}">{{last_post.judul|safe}}</a> </span> | <span style="color:#e96b56">{{last_post.created|date}}</span>
+                {% endif %}
+                  
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4 ">
+            <div class="icon-box entri" id="entri" style="border-top: 10px solid #303179">
+              
+              <h3>Entri Data</h3>
+              <p>Total Entri Kata Bahasa Manado : <br><span style="color:#e96b56">{{entri_manado}}</span></p>
+              <p>Total Entri Kalimat Bahasa Manado : <br><span style="color:#e96b56">{{entri_kalimat}}</span></p>
+              
+              {% if request.user.is_authenticated and request.user.is_verified %}
+                <a href="{% url 'export-entri' %}" class="btn-get-unduh">Unduh Data Entri Bahasa Manado</a>
+              {% endif %}
+                
+              
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4 ">
+            <div class="icon-box" style="border-top: 10px solid #A4A3A9">
+             
+              <h3>User</a></h3>
+              <p>Total User : <span style="color:#e96b56">{{user}}</span></p>
+              <p>Total Verifikator : <span style="color:#e96b56">{{verifikator}}</span></p>
+              <p>User Terbaru : <br><a href="{{user_latest.get_url}}">{% if user_latest.anonym == True %}@{{user_latest.user.username|lower|slice:":1"}}*****{% else %}@{{user_latest.user.username|lower}}{% endif %}</a> </span> | <span style="color:#e96b56">{{user_latest.created|date}}</span></p>
+              <p>Verifikator Terbaru : <span style="color:#e96b56"><br><a href="{{verifikator_latest.get_url}}">{{verifikator_latest.fullname|safe}}</a> </span> | <span style="color:#e96b56">{{verifikator_latest.created|date}}</span></span></p>
+              
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4 ">
+            <div class="icon-box" style="border-top: 10px solid #e96b56">
+              <h3>Peringkat</a></h3>
+              {% if most_point.points == 0.0 %}
+              <p>#1 User (Poin) : <span style="color:#e96b56">--</span></p>
+              {% else %}
+              <p>#1 User (Poin) : <span style="color:#e96b56"><a href="{{most_point.get_url}}">{% if most_point.anonym == True %}@{{most_point.user.username|lower|slice:":1"}}*****{% else %}@{{most_point.user.username|lower}}{% endif %}</a></span></p>
+              {% endif %}
+              <p>#1 User (Terjemahan) : <span style="color:#e96b56"><a href="{{high_user.get_url}}">{% if high_user.anonym == True %}@{{high_user.user.username|lower|slice:":1"}}*****{% else %}@{{high_user.user.username|lower}}{% endif %}</a></span></p>
+              
+              <p>Unggahan Paling Banyak Dilihat : <br><span style="color:#e96b56"><a href="{{highest.get_url}}">{{highest.judul|safe}}</a> </span> | <span style="color:#e96b56">{{highest.created|date}}</span></p>
+              <p>Unggahan Paling Banyak Diterjemahkan : <br><span style="color:#e96b56"><a href="{{frequent_post.get_url}}">{{frequent_post.judul|safe}}</a> </span> | <span style="color:#e96b56">{{frequent_post.created|date}}</span></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Featured Section -->
+
+   
+
+    
+
+    
+
+  </main><!-- End #main -->
+
+  {% endblock content %}

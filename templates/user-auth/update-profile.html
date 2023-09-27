@@ -1,0 +1,49 @@
+{% extends 'user-auth/auth_base.html' %}
+{% block content %}
+{% load static %}
+
+  <main id="main">
+      <!-- ======= Title Section ======= -->
+      
+    <section id="featured" class="featured-reg" style="margin-top:100px">
+        <div class="container">
+        
+            <form action="." method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 mb-4" id="forum">
+                        <div class="icon-box" style="border-top: 10px solid #ED7966"> 
+                            <img src= {% static "assets/img/authlogo.png" %} alt="" class="pb-4">
+                            <h3><a href="#"> {% if operation == "edit" %}Edit {% else %}Lengkapi {% endif %}Profil</a></h3>
+                            <hr style="max-width:70%;" class="mx-auto">
+                            <p class="text-break mx-auto fs-6">
+                                {{user.role|title}}, <strong>{{user}}</strong> {% if operation == "edit" %}Edit {% else %}Lengkapi {% endif %} Profil Anda
+                            </p>
+                                                        
+                                <div class="form-group mt-2 mx-auto col-8 text-center">
+                                {{form.fullname}}
+                                </div>
+                               
+                                <div class="form-group mt-2 mx-auto col-8 text-center">
+                                {{form.profile_pic}}
+                                                                                   
+                                <button class="btn btn-sm btn-secondary rounded-pill mt-3 mb-5" style="width:75%;" type="submit">Simpan</button>
+                            
+                                
+                               
+                        </div>   
+                    </div>
+                </div>
+            </form> 
+        </div>
+    </section><!-- End Featured Section -->
+
+   
+
+    
+
+    
+
+  </main><!-- End #main -->
+
+  {% endblock content %}

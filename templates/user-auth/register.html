@@ -1,0 +1,79 @@
+{% extends 'user-auth/auth_base.html' %}
+{% block content %}
+{% load static %}
+
+  <main id="main">
+      <!-- ======= Title Section ======= -->
+      
+    <section id="featured-reg" class="featured-reg" style="margin-top:100px">
+        <div class="container">
+        
+            
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 mb-4" id="forum">
+                        <div class="icon-box" style="border-top: 10px solid #ED7966"> 
+                            <img src= {% static "assets/img/authlogo.png" %} alt="" class="pb-4">
+                            <h3><a href="">Mendaftar</a></h3>
+                            <hr style="max-width:70%;" class="mx-auto">
+                            <p class="text-break mx-auto">
+                                Silahkan Membuat Akun Baru Untuk Mengakses Seluruh Konten Forum
+                            </p>
+                            <form action="." method="POST">
+                                {% csrf_token %}
+                                {% if ermessages != "" %}
+                                <div class="text-danger">
+                                    
+                                    {{ermessages}}
+                                </div>
+                                {% endif %}                
+                                {% if form.errors %}
+                                    {% for field, error in form.errors.items %}
+                                        {% if field != '__all__' %}{% endif %}
+                                            <div class="text-danger">
+                                            {{ error | striptags }}
+                                            </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="form-group mt-2 mx-auto col-8 text-center">
+                                   {{form.username}}
+                                </div>
+                                <div class="form-group mt-2 mx-auto col-8 text-center">
+                                    {{form.email}}
+                                </div>
+                                <div class="form-group mt-2 mx-auto col-8 text-center">
+                                    {{form.password1}}
+                                </div>
+                                <div class="form-group mt-2 mx-auto col-8 text-center">
+                                    {{form.password2}}
+                                </div>                                                        
+                               
+                                    <button class="btn btn-sm btn-secondary rounded-pill mx-auto mt-3" style="width:50%;" type="submit">
+                                        Mendaftar
+                                    </button>
+
+                            </form>
+                           
+                                <div class="login">
+                                    <p class="text-break login mx-auto mt-2">
+                                        <a href="{% url 'users:login' %}">Sudah Punya Akun?</a>
+                                </div>
+                               
+                                </div>
+                        </div>   
+                    </div>
+                </div>
+            
+        </div>
+    </section><!-- End Featured Section -->
+
+   
+
+    
+
+    
+
+  </main><!-- End #main -->
+
+  {% endblock content %} 
+
+  

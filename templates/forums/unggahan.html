@@ -1,0 +1,999 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+{% load humanize %}
+
+<main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+      <div class="container">
+
+        <ol>
+          <li><a href="{% url 'index' %}">Home</a></li>
+          <li><a href="{% url 'forum' %}">Forum</a></li>
+          <li>{{post.judul}}</li>
+        </ol>
+        {% comment %} <h2>{{post.judul}}</h2> {% endcomment %}
+
+      </div>
+    </section><!-- End Breadcrumbs -->
+
+    
+
+    <!-- ======= Blog Single Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-12 entries">
+
+            <article class="entry entry-single">             
+              <h2 class="entry-title">
+                <a href="{{post.get_url}}">{{post.judul}}</a>
+              </h2>
+
+              <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#">{{post.user.fullname|title}}</a></li>
+
+                  <li class="d-flex align-items-center"><i class="bi bi-clock-fill"></i> <a href="#"><time datetime="{{post.date|date}}">{{post.created|date}}</time></a></li>
+
+                  <li class="d-flex align-items-center"><i class="bi bi-clock-history"></i> <a href="#"><time datetime="{{post.date|date}}">{{post.updated|date}}</time></a></li>
+
+                  {% if post.tipe == "Artikel" %}
+
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#">{{post.num_translasi}} Translasi</a></li>
+
+                  {% endif %}
+
+                  <li class="d-flex align-items-center"><i class="bi bi-eye"></i><a href="#"> Dilihat {% get_hit_count for post %} Kali</a></li>
+                  
+                  <li class="d-flex align-items-center"><i class="bi bi-folder"></i>
+                    
+                      <a href="#">{{post.kategori}}</a>
+                  </li>
+                  
+                  
+                </ul>
+              
+              </div>
+
+              <div class="entry-content">
+                <hr>
+               
+                  {% if post.tipe == "Pengumuman" and userid.role == "ADMIN" %}
+                  {% comment %} <div class="d-grid gap-2 d-md-flex justify-content-md-end"> {% endcomment %}
+
+                    <div class="d-flex align-items-end justify-content-md-start"><a href="" data-bs-toggle="modal" data-bs-target="#announceModal" class="text-dark fs-5"><i class="bi bi-pencil-square text-warning fs-5"></i> Perbarui</a></div>
+                  {% endif %}
+                
+               {% if post.tipe != "Artikel"  %}
+               
+               {% else %}
+                <p>
+                    <strong>
+                        Judul Artikel :  
+                        <span style="color:#ED7966;" class="text-break"> 
+                          {{post.judul}}
+                        </span>
+                    </strong>
+                </p>
+                <p>
+                    <strong>
+                        URL Sumber : 
+                        <span style="color:#ED7966;" class="text-break url-berita">
+                            <a href="{{post.url}}" >
+                              {{post.url}}
+                            </a>
+                          </span>
+                    </strong>
+                </p>
+                {% endif %}
+                <p>
+                  {{post.konten|safe}}
+                </p>
+                {% if winner == "None" %}
+                {% else %}
+                
+                {% if post.tipe == "Polling" %}
+                 
+                <p class="fs-5">
+                  
+                  <span >#1 | </span> 
+                    <a href="{% url 'lihat-profil-user' winner.user.fullname|slugify %}" style="text-decoration:underline">
+                      
+                        
+                      {{winner.user.fullname|title}}
+                      
+                    </a>
+                  
+                </p>
+                <p class="fs-6">
+                  <span >Total Suara : </span> 
+                    <strong style="color:#ED7966;">
+                      {{total_vote}} 
+                    </strong>
+                    dari <strong style="color:#ED7966;">{{num_user}}</strong> Penerjemah
+                </p>
+                {% endif %}
+                {% endif %}
+                {% if post.tipe == "Polling" %}
+                
+                <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="trans-id" value="{{trans.id}}">
+                  {% if is_voted == True or poll_status == "not existed" or userid.role == "ADMIN" %}
+                  <table class="table align-middle " >
+                    <!-- Tabel Pengumuman -->
+                      <thead class="table-secondary border-start border-end">
+                        <tr>
+                          <th scope="col" colspan="7">
+                            {% if poll_active.num_kandidat == 0 %}
+                              {% if poll_status == "exists" %}
+                              {% endif %} {{poll_active.nama_polling|title}} (Dibuka : {{poll_active.created|date}}) | (Ditutup <span style="color:#ED7966;">{{poll_active.time_left}}</span> Hari Lagi)
+                              {% if poll_status == "not existed" %}
+                              - (Ditutup : {{poll_active.updated}})
+                              {% endif %}
+                            {% else %}
+                              Hasil {% if poll_status == "exists" %} Sementara
+                              {% endif %} {{poll_active.nama_polling|title}} (Dibuka : {{poll_active.created|date}}) | {% if poll_status == "exists" %} (Ditutup <span style="color:#ED7966;">{{poll_active.time_left}}</span> Hari Lagi) {% endif %}
+                              {% if poll_status == "not existed" %}
+                              (Ditutup : {{poll_active.updated}})
+                              {% endif %}
+                            {% endif %}
+                        
+                          </th>
+                        </tr>
+                      </thead>
+                      <thead class="border-start border-end">
+                        <tr class="border-start border-end" valign="middle">
+                          <th scope="col"></th>
+                          <th scope="col">No.</th>
+                          <th scope="col">Fullname</th>
+                          <th scope="col">Hasil</th>
+                        </tr>
+                      </thead>
+                      <tbody class="border">
+                
+                        {%  for kandidat in candidate  %}
+                        <tr >
+                          <td>
+                          </td>
+                          <td>{{forloop.counter}}</td>
+
+                          <td><p><a href="{% url 'lihat-profil-user' kandidat.user.fullname|slugify %}">{{kandidat.user.fullname}}</a></p></td>
+                          <td>
+                            {{kandidat.num_polls}} Suara <br>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                      {% if userid.role == "ADMIN" %}
+
+                      {% elif userid.role == "VERIFIKATOR"%}
+                      {% elif userid.role == "USER"%}
+                        {% if is_voted == True %}
+                          <tr>
+                            <td scope="col" class="border-start border-end table-primary" colspan="7">Pilihan Anda <span class="fw-bold"><a href="{% url 'lihat-profil-user' votes.user.fullname|slugify %}">{{votes.user.fullname}}</a></span><span style="fst-light"></span>  </td>
+                          </tr>
+                        {% else %}
+                          <tr>
+                            <td scope="col" class="border-start border-end table-danger" colspan="7">Anda <strong>Tidak Memilih</strong> Pada Periode Polling Ini<span class="fw-bold"></span><span style="fst-light"></span>  </td>
+                          </tr>
+                        {% endif %}
+                      
+                      {% endif %}
+                  </table>
+                  {% else %}
+                  <table class="table align-middle " >
+                    <!-- Tabel Pengumuman -->
+                  
+                      <thead class="table-secondary border-start border-end">
+                        <tr>
+                          <th scope="col" colspan="7"><span class="badge rounded-pill text-bg-secondary fs-6 "></i></span> {{poll_active.nama_polling|title}} (Dibuka : {{poll_active.created|date}}) </th>
+                        </tr>
+                      </thead>
+                      <thead class="border-start border-end">
+                        <tr class="border-start border-end" valign="middle">
+                          <th scope="col"></th>
+                          <th scope="col">Pilih</th>
+                          <th scope="col">Fullname</th>
+                          <th scope="col">Poin</th>
+                        </tr>
+                      </thead>
+                      <tbody class="border">
+                        {% for kandidat in poll_active.kandidat.all %}
+                        {% comment %} {{instrumen.key}} {% endcomment %}
+                    <form action="" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="polls-user" value="{{userid.id}}">
+                          <input type="hidden" name="polls-slug" value="{{poll_active.slug}}">
+                              <tr >
+                                <td>
+                                 
+                                </td>
+                                <td>
+                                  <input class="form-check-input mt-0" type="radio" value="{{kandidat.slug}}" aria-label="{{kandidat.user.fullname}}" name="kandidat" id="kandidat" required>
+                                </td>
+                                <td><p><a href="{% url 'lihat-profil-user' kandidat.user.fullname|slugify %}">{{kandidat.user.fullname}}</a></p></td>
+                                <td>
+                                  {{kandidat.user.points}} <br>
+                                </td>
+                              </tr>
+                        {% endfor %}
+                        
+                      </tbody> 
+                  </table>
+                  
+                  {% if request.user.role == "USER" %}
+                    {% if poll_active.num_kandidat == 4 %}
+                      <div class="sidebar-item tags mb-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                          <input type="submit" name="vote-form" value="Simpan" class="btn btn-success"></input>
+                        </div>
+                      </div>
+                    {% endif %}
+                  
+                  {% endif %}
+                </form>
+                {% endif %}
+                  
+                  {% if request.user.role == "ADMIN" %}
+                    <div class="sidebar-item tags mb-4">
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        
+                        {% if poll_status == "exists" %}
+                          {% if poll_active.num_kandidat == 4 %}
+                           <button name="tambah" class="btn btn-secondary" id="liveToastBtn" type="button">Tambah Kandidat ({{poll_active.num_kandidat}}/4)</button>
+                          {% elif poll_active.num_kandidat < 4 %}
+                            <button type="button" name="tambah" data-bs-toggle="modal" data-bs-target="#addCandidate" class="btn btn-success">Tambah Kandidat ({{poll_active.num_kandidat}}/4)</button>
+                          {% endif %}
+                          
+                          {% comment %} {% if poll_active.older_than_one_week %} {% endcomment %}
+                          <button type="button" data-bs-toggle="modal" data-bs-target="#closepollsModal" class="btn btn-dark" >Tutup</button>
+                          {% comment %} {% endif %} {% endcomment %}
+                            
+                        {% else %}
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#startpollsModal" class="btn btn-success">Polling Baru</button>
+                        {% endif %}
+                          
+                      
+                      </div>
+                    </div>
+
+                  <!-- Modal mulai polling -->
+                    <div class="modal fade" id="startpollsModal" tabindex="-1" aria-labelledby="startpollsModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content text-dark">
+                          <div class="modal-header align-center">
+                            
+                            <h1 class="modal-title fs-5" id="startpollsModalLabel">Mulai Polling Baru</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <form action="" method="post" >
+                            <div class="modal-body">
+                              <input type="hidden" name="poll-name" id="poll-name" value="Polling {{next_poll}}" ></input>
+                              <input type="hidden" name="poll-num" id="poll-num" value="{{next_poll}}" ></input>
+                              <input type="hidden" name="creator" value="{{userid.id}}">
+
+                              <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <span class="fs-5">Polling Selanjutnya : <span class="fw-semibold" style="color:#303179;"> Polling {{next_poll}}</span></span>
+                              </div>
+                            </div>
+                          <div class="modal-footer">
+                              {% csrf_token %}
+                             
+                              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <input type="submit" name="start-poll" value="Mulai Polling" class="btn btn-success"></input>
+                              </div>
+                            </form>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Modal tutup polling -->
+                    <div class="modal fade" id="closepollsModal" tabindex="-1" aria-labelledby="closepollsModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content text-dark">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="closepollsModalLabel">Tutup Polling</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            Anda Yakin Ingin Menutup {{poll_active.nama_polling}}?
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <form action="" method="post" onsubmit="return confirm('Yakin ingin menutup polling?');">
+                              {% csrf_token %}
+                              <input type="hidden" name="close-poll" id="close-poll" value="close">
+                              <input type="hidden" name="poll-slug" id="poll-slug" value="{{poll_active.slug}}">
+                              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <input type="submit" name="close-poll" value="Tutup Polling" class="btn btn-danger"></input>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Modal -->
+                  <div class="modal fade" id="addCandidate" tabindex="-1" aria-labelledby="addCandidateLabel2" aria-hidden="true">
+                    <div class="modal-dialog d-flex justify-content-center">
+                        <div class="modal-content w-75">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addCandidateLabel2">Tambah Kandidat</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <form action="" method="post">
+                                  {% csrf_token %}
+                                    <!-- Name input -->
+                                    <select class="form-select mb-4" name="email" id="email">
+                                      <option >Pilih Kandidat Verifikator</option>
+                                      {% for can in permintaan  %}
+                                        <option value="{{can.email}}" name="email" id="email">{{can.requester.fullname|title}} (poin : {{can.requester.points}}) (diajukan: {{can.requester.created|date}})</option>
+                                      {% endfor %}
+                                    <input type="hidden" name="pollname" id="pollname" value="{{poll_active.nama_polling|lower}}">
+                                    {% comment %} <input type="hidden" name="email" id="email" value="{{can.email}}"> {% endcomment %}
+                                    </select>
+
+                                    <!-- Submit button -->
+                                    <input type="submit" name="add-candidate-form" value="Tambahkan" class="btn btn-dark"></input>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <!-- Modal -->
+                  <!-- toast -->
+                  <div class="toast-container position-fixed top-0 end-0 me-4" style="margin-top:5rem">
+                    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"  >
+                      <div class="toast-header">
+                        <span class="fs-5 text-danger me-1"><i class="bi bi-x-circle-fill"></i></span>
+                        <strong class="me-auto text-danger"> Kandidat Penuh</strong>
+                        {% comment %} <small>11 mins ago</small> {% endcomment %}
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
+                      <div class="toast-body">
+                        Kuota Kandidat Untuk Periode <strong>{{poll_active.nama_polling}} </strong> sudah penuh, silahkan menutup pemilihan terlebih dahulu dan memulai pemilihan verifikator baru.
+                      </div>
+                    </div>
+                  </div>
+                  <!-- toast -->
+
+                  {% else %}
+                  
+                  {% endif %}
+                    
+                  
+                {% endif %}
+              </form> 
+              </div>
+
+              <div class="entry-footer">
+              {% if post.status == False %}
+                {% if post.dinilai == False %}
+                {% if request.user.role == "VERIFIKATOR" %}
+                <div class="sidebar-item tags">
+                  <div class="d-grid gap-2 d-md-flex  justify-content-md-end mb-3 mt-3">
+                  <form action="" method="post" >
+                    {% csrf_token %}
+                    <input type="hidden" name="close-post" id="close-post" value="close">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                      
+                      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#noteModal">
+                       Tambahkan Catatan Penilaian
+                      </button>
+                    </div>
+                    
+                  </form>
+                  <form action="" method="post" onsubmit="return confirm('Yakin ingin menyelesaikan penilaian?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="finish-evaluating" id="finish-evaluating" value="finish">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                      
+                      <input type="submit" name="finish-form" value="Selesai Menilai" class="btn btn-dark"></input>
+                    </div>
+                    
+                  </form>
+                </div>   
+                </div>
+                {% else %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                
+                  <span class="text-warning">Unggahan Sudah Ditutup Untuk Dinilai</span>
+                </div>
+                {% endif %}
+                
+                
+                {% elif post.dinilai == True %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                
+                  <span class="text-success">Unggahan Sudah Ditutup dan Dinilai</span>
+                </div>
+                {% endif %}
+              {% else %}
+                {% if request.user.is_authenticated %}
+                  
+                  {% if request.user.role == "ADMIN" %}
+                    {% if post.tipe != "Artikel" %}
+                    {% else %}
+                      {% if post.status != False %}
+                        <div class="sidebar-item tags">
+                          <form action="" method="post" onsubmit="return confirm('Yakin ingin menutup unggahan?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="close-post" id="close-post" value="close">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                              
+                              <input type="submit" name="close-form" value="Tutup Unggahan" class="btn btn-danger"></input>
+                            </div>
+                            
+                          </form>
+                        </div>
+                      {% else %}
+                     
+                    {% endif %}
+                      {% endif %}
+                  {% elif request.user.role == "USER" %}
+                    
+                        
+                          {% if post.tipe != "Artikel" %}
+                          
+                          {% else %}
+                            {% if translasi != None %}
+                              <div class="d-grid gap-2 d-md-flex justify-content-md-end text-success">
+                                Anda telah menerjemahkan artikel ini
+                              </div>
+                            {% else %}
+                              {% if request.user.is_verified == 0 %}
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end text-danger">
+                                  Konfirmasi email anda untuk akses penuh
+                                    {% comment %} <a href="{% url 'buat-terjemahan' %}" class="btn btn-secondary text-bg-secondary justify-content-md-end">Terjemahkan Artikel Ini</a> {% endcomment %}
+                                </div>
+                              {% else %}
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#translateModal">
+                                    Terjemahkan artikel
+                                  </button>
+                                    {% comment %} <a href="{% url 'buat-terjemahan' %}" class="btn btn-secondary text-bg-secondary justify-content-md-end">Terjemahkan Artikel Ini</a> {% endcomment %}
+                                </div>
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+                          
+                  {% endif %}
+                
+                {% else %}
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end text-danger">
+                    Masuk dengan akun anda untuk akses penuh
+                      {% comment %} <a href="{% url 'buat-terjemahan' %}" class="btn btn-secondary text-bg-secondary justify-content-md-end">Terjemahkan Artikel Ini</a> {% endcomment %}
+                  </div>
+                {% endif %}
+
+              </div>
+              {% endif %}
+            </article><!-- End blog entry -->
+  {% if post.tipe == "Polling" %}
+
+  {% else %}
+      
+
+            <div class="blog-comments">
+              
+              {% if post.tipe != "Pengumuman" %}
+                <h4 class="comments-count">{{post.num_translasi}} Translasi ({{dinilai}} Dinilai)</h4>
+              {% endif %}
+                
+
+           
+              {% for trans in post.translasi.all  %}
+                
+                
+              <div id="comment-1" class="comment">
+                <div class="d-flex">
+                  <div class="comment-img me-3">
+                    <h5>
+                    <a href="{{trans.user.get_url}}"><img src= {{trans.user.profile_pic.url}} alt=""> </a>
+                    </h5>
+                  </div>
+                  <div>
+                    
+                      <div class="uname">
+                        <h5>
+                        <a href="{{trans.user.get_url}}" style="font-weight: bold; color: #444444; transition: 0.3s;"> {% if trans.user.anonym == True %}@{{trans.user.user.username|lower|slice:":1"}}*****{% else %}@{{trans.user.user.username|lower}}{% endif %}  </a>
+                        {% if trans.best == True %}
+                          <span class="reply badge rounded-pill text-bg-success ms-2"><i class="bi bi-patch-check fs-6"></i> 
+                            <span class="fs-6 fw-light">Translasi Terbaik</span>
+                          </span>
+                        {% endif %}
+                        <p style="color:#ED7966;">{{trans.created|date}}</p>
+                        </h5>
+
+                        
+                        
+                      </div>
+                    
+                    <span class="mt-2">{{trans.content|safe}}{{trans.num_sentence}} </span>
+                  
+                    {% if trans.poin == 0.0 %}
+                        
+                        <div class="nilai">
+                              {% if request.user.is_authenticated %}
+                                {% if request.user.role == "VERIFIKATOR" %}
+                                <div id="translasi{{trans.id}}">
+                                  <details style="list-style: none;" >
+                                    <summary style="list-style: none; color: #e96b56;" >
+                                        <i class="bi bi-pencil-square" ></i> <span>Nilai Terjemahan Ini</span>
+                                    </summary>
+                                  
+                                    <form action="" method="post">
+                                      {% csrf_token %}
+                                      <input type="hidden" name="trans-id" value="{{trans.id}}">
+                                      <table class="table align-middle " >
+                                        <!-- Tabel Pengumuman -->
+                                      
+                                          <thead class="table-secondary border-start border-end">
+                                            <tr>
+                                              <th scope="col" colspan="7"><span class="badge rounded-pill text-bg-secondary fs-6 "></i></span> {{penilaian.penilaian1.title|safe}} ({{penilaian.penilaian1.bobot}}%) </th>
+                                            </tr>
+                                          </thead>
+                                          <thead class="border-start border-end">
+                                            <tr class="border-start border-end" valign="middle">
+                                            
+                                              <th scope="col"></th>
+                                              <th scope="col" colspan="2">Beri Nilai</th>
+                                              <th scope="col">Instrumen Penilaian</th>
+                                              <th scope="col">Bobot</th>
+                                              <th scope="col"></th>
+                                          
+                                            
+                                            </tr>
+                                          </thead>
+                                          <tbody class="border">
+                                            {% comment %} {{instrumen}} {% endcomment %}
+                                            {% comment %} {{instrumen1}} {% endcomment %}
+                                            {% for instrumen in instrumen1 %}
+                                            {% comment %} {{instrumen.key}} {% endcomment %}
+                                                {% for value in instrumen%}
+                                                  <tr >
+                                                    <td>
+                                                    
+                                                    </td>
+                                                    <td colspan="2">
+                                                      <input class="form-check-input mt-0" type="radio" value="{{value.nilai}}" aria-label="Radio button for following text input" name="pt1" id="pt1">
+                                                    </td>
+                                                    <td><h5>{{value.title|striptags|safe}}</h5></td>
+                                                    <td align="center">
+                                                      {{value.nilai}} <br>
+                                                    </td>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                  </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                          </tbody> 
+                                          
+                                          
+                                        <!-- End Tabel Pengumuman -->
+                          
+                                          {% comment %} <thead class="table-borderless">
+                                            <tr>
+                                              <th scope="col" colspan="6" ></th>
+                                            </tr>
+                                          </thead> {% endcomment %}
+                          
+                                        <!-- Tabel Unggahan -->
+                                          
+                                        <!-- End Tabel Unggahan -->
+                                      </table>
+                                      <table class="table align-middle ">
+                                        <!-- Tabel Pengumuman -->
+                                      
+                                          <thead class="table-secondary border-start border-end">
+                                            <tr>
+                                              <th scope="col" colspan="7"><span class="badge rounded-pill text-bg-secondary fs-6 "></i></span> {{penilaian.penilaian2.title|safe}} ({{penilaian.penilaian2.bobot}}%) </th>
+                                            </tr>
+                                          </thead>
+                                          <thead class="border-start border-end">
+                                            <tr class="border-start border-end " valign="middle">
+                                              <th scope="col"></th>
+                                              <th scope="col" colspan="2">Beri Nilai</th>
+                                              <th scope="col">Instrumen Penilaian</th>
+                                              <th scope="col">Bobot</th>
+                                              <th scope="col"></th>
+                                              
+                                          
+                                            
+                                            </tr>
+                                          </thead>
+                                          <tbody class="border">
+                                            {% comment %} {{instrumen}} {% endcomment %}
+                                            {% comment %} {{instrumen1}} {% endcomment %}
+                                            {% for instrumen in instrumen2 %}
+                                            {% comment %} {{instrumen.key}} {% endcomment %}
+                                                {% for value in instrumen%}
+                                                  <tr>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                    <td colspan="2">
+                                                      <input class="form-check-input mt-0" type="radio" value="{{value.nilai}}" aria-label="Radio button for following text input" name="pt2" id="pt2">
+                                                    </td>
+                                                    <td><h5>{{value.title|safe}}</h5></td>
+                                                    <td align="center">
+                                                      {{value.nilai}} <br>
+                                                    </td>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                  </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                          </tbody> 
+                                          
+                                          
+                                        <!-- End Tabel Pengumuman -->
+                          
+                                          {% comment %} <thead class="table-borderless">
+                                            <tr>
+                                              <th scope="col" colspan="6" ></th>
+                                            </tr>
+                                          </thead> {% endcomment %}
+                          
+                                        <!-- Tabel Unggahan -->
+                                          
+                                        <!-- End Tabel Unggahan -->
+                                      </table>
+                                      <table class="table align-middle ">
+                                        <!-- Tabel Pengumuman -->
+                                      
+                                          <thead class="table-secondary border-start border-end">
+                                            <tr>
+                                              <th scope="col" colspan="7"><span class="badge rounded-pill text-bg-secondary fs-6 "></i></span> {{penilaian.penilaian3.title|safe}} ({{penilaian.penilaian3.bobot}}%) </th>
+                                            </tr>
+                                          </thead>
+                                          <thead class="border-start border-end">
+                                            <tr class="border-start border-end " valign="middle">
+                                              <th scope="col"></th>
+                                              <th scope="col" colspan="2">Beri Nilai</th>
+                                              <th scope="col">Instrumen Penilaian</th>
+                                              <th scope="col">Bobot</th>
+                                              <th scope="col"></th>
+                                              
+                                          
+                                            
+                                            </tr>
+                                          </thead>
+                                          <tbody class="border">
+                                            {% comment %} {{instrumen}} {% endcomment %}
+                                            {% comment %} {{instrumen1}} {% endcomment %}
+                                            {% for instrumen in instrumen3 %}
+                                            {% comment %} {{instrumen.key}} {% endcomment %}
+                                                {% for value in instrumen%}
+                                                  <tr>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                    <td colspan="2">
+                                                      <input class="form-check-input mt-0" type="radio" value="{{value.nilai}}" aria-label="Radio button for following text input" name="pt3" id="pt3">
+                                                    </td>
+                                                    <td><h5>{{value.title|safe}}</h5></td>
+                                                    <td align="center">
+                                                      {{value.nilai}} <br>
+                                                    </td>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                  </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                          </tbody> 
+                                          
+                                          
+                                        <!-- End Tabel Pengumuman -->
+                          
+                                          {% comment %} <thead class="table-borderless">
+                                            <tr>
+                                              <th scope="col" colspan="6" ></th>
+                                            </tr>
+                                          </thead> {% endcomment %}
+                          
+                                        <!-- Tabel Unggahan -->
+                                          
+                                        <!-- End Tabel Unggahan -->
+                                      </table>
+                                      <table class="table align-middle ">
+                                        <!-- Tabel Pengumuman -->
+                                      
+                                          <thead class="table-secondary border-start border-end">
+                                            <tr>
+                                              <th scope="col" colspan="7"><span class="badge rounded-pill text-bg-secondary fs-6 "></i></span> {{penilaian.penilaian4.title|safe}} ({{penilaian.penilaian4.bobot}}%) </th>
+                                            </tr>
+                                          </thead>
+                                          <thead class="border-start border-end">
+                                            <tr class="border-start border-end " valign="middle">
+                                              <th scope="col"></th>
+                                              <th scope="col" colspan="2">Beri Nilai</th>
+                                              <th scope="col">Instrumen Penilaian</th>
+                                              <th scope="col">Bobot</th>
+                                              <th scope="col"></th>
+                                            
+                                          
+                                            
+                                            </tr>
+                                          </thead>
+                                          <tbody class="border">
+                                            {% comment %} {{instrumen}} {% endcomment %}
+                                            {% comment %} {{instrumen1}} {% endcomment %}
+                                            {% for instrumen in instrumen4 %}
+                                            {% comment %} {{instrumen.key}} {% endcomment %}
+                                                {% for value in instrumen%}
+                                                  <tr>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                    <td colspan="2">
+                                                      <input class="form-check-input mt-0" type="radio" value="{{value.nilai}}" aria-label="Radio button for following text input" name="pt4" id="pt4">
+                                                    </td>
+                                                    <td><h5>{{value.title|safe}}</h5></td>
+                                                    <td align="center">
+                                                      {{value.nilai}} <br>
+                                                    </td>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                  </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                          </tbody> 
+                                          
+                                          
+                                        <!-- End Tabel Pengumuman -->
+                          
+                                          {% comment %} <thead class="table-borderless">
+                                            <tr>
+                                              <th scope="col" colspan="6" ></th>
+                                            </tr>
+                                          </thead> {% endcomment %}
+                          
+                                        <!-- Tabel Unggahan -->
+                                          
+                                        <!-- End Tabel Unggahan -->
+                                      </table>
+                                      <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-2">
+                                        <input type="submit" name="point-form" value="Beri Nilai" class="btn btn-dark"></input>
+                                      </div>
+                    
+                                    </form>
+                                  </details>
+                                </div>
+                                {% else %}
+                                <div class="d-grid gap-2 d-md-flex  justify-content-md-end me-2">
+                                  <span style="color:#ED7966" class="text-break">Nilai Terjemahan : 
+                                    <strong>Belum Dinilai</strong>
+                                  </span>
+                                </div>
+                                {% endif %}
+                              {% endif %}
+                          
+                              
+                    {% else %}
+                            <div class="d-grid gap-2 d-md-flex  justify-content-md-end me-2">
+                                      
+                              <span style="color:#ED7966" class="text-break">
+                                  Nilai Terjemahan : <strong>{{trans.poin}} / 4</strong>
+                                  <br>
+                                  Dinilai oleh : <a href="{{trans.penilai.get_url}}"><strong>@{{trans.penilai.user.username}}</strong></a>
+                              </span>
+                                        
+                            </div>
+                    {% endif %}
+                    </div>
+                  </div>
+                  
+                </div>
+                <hr>
+              </div><!-- End comment #1 -->
+
+              {% endfor %}
+              
+             
+
+            </div><!-- End blog comments -->
+
+          </div><!-- End blog entries list -->
+        </div>
+
+      </div>
+          
+        
+
+    </section><!-- End Blog Single Section -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="translateModal" tabindex="-1" aria-labelledby="translateModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="align-items: flex-end;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title text-center  fs-5" id="translateModalLabel">
+                <span class="entry-title mb-4" style="color:#ED7966;">
+                Buat Terjemahan
+               </span></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container" data-aos="fade-up">
+              <div class="row">
+                <div class="col-lg-6 entries">
+                  <article class="entry entry-single">             
+                    <h5 class="entry-title">
+                      <a href="#">{{post.judul}}</a>
+                    </h5>
+                    <div class="entry-content">
+                      <hr>
+                      <p>
+                          {{post.konten|safe}}
+                      </p>
+                    </div>
+                  </article><!-- End blog entry -->
+                </div><!-- End blog entries list -->
+      
+                <div class="col-lg-6">
+                  <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    Untuk kelancaran pengolahan kata pastikan terjemahan memuat <strong>Judul Artikel</strong>, <strong>Konten Artikel</strong>, <strong>Tidak Menggunakan Singkatan</strong>, serta <strong> Tidak Memasukkan Nama Portal Berita.</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  <div class="sidebar">
+                       
+                    <div class="reply-form">
+                      <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                          {% comment %} <input type="hidden" name="translasi-form" id=""> {% endcomment %}
+                          <div class="col form-group">
+                            {{forms.content}}
+                          </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                          <input type="submit" name="translasi-form" value="Terjemahkan" class="btn btn-dark"></input>
+                        </div>
+      
+                      </form>
+      
+                    </div>
+      
+                  </div><!-- End sidebar -->
+      
+                </div><!-- End blog sidebar -->
+      
+              </div>
+      
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            {% comment %} <button type="button" class="btn btn-secondary">Save changes</button> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    
+    
+    <!-- editPengumuman -->
+    <div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="align-items: flex-end;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title text-center  fs-5" id="noteModalLabel">
+                <span class="entry-title mb-4" style="color:#ED7966;">
+                Catatan Penilaian
+               </span></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container" data-aos="fade-up">
+              <div class="row">
+                
+                <div class="col-lg-12">
+                  
+                  <div class="sidebar">
+                       
+                    <div class="reply-form">
+                      <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                          {% comment %} <input type="hidden" name="translasi-form" id=""> {% endcomment %}
+                          <div class="col form-group">
+                            {{noteforms.content|safe}}
+                          </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                          <input type="submit" name="note-form" value="Tambahkan Catatan" class="btn btn-dark"></input>
+                        </div>
+      
+                      </form>
+      
+                    </div>
+      
+                  </div><!-- End sidebar -->
+      
+                </div><!-- End blog sidebar -->
+      
+              </div>
+      
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            {% comment %} <button type="button" class="btn btn-secondary">Save changes</button> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="modal fade" id="announceModal" tabindex="-1" aria-labelledby="announceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="align-items: flex-end;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title text-center  fs-5" id="announceModalLabel">
+                <span class="entry-title mb-4" style="color:#ED7966;">
+                Perbarui Pengumuman
+               </span></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container" data-aos="fade-up">
+              <div class="row">
+                
+                <div class="col-lg-12">
+                  
+                  <div class="sidebar">
+                       
+                    <div class="reply-form">
+                      <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                          {% comment %} <input type="hidden" name="translasi-form" id=""> {% endcomment %}
+                          <div class="col form-group">
+                            {{announceforms.konten}}
+                          </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                          <input type="submit" name="perbarui-form" value="Perbarui Pengumuman" class="btn btn-dark"></input>
+                        </div>
+      
+                      </form>
+      
+                    </div>
+      
+                  </div><!-- End sidebar -->
+      
+                </div><!-- End blog sidebar -->
+      
+              </div>
+      
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            {% comment %} <button type="button" class="btn btn-secondary">Save changes</button> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    
+  {% endif %}     
+  </main><!-- End #main -->
+
+{% endblock content %}

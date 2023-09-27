@@ -1,0 +1,472 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+{% load el_pagination_tags %}
+
+<main id="main">
+{% comment %} 
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li>Profil</li>
+      </ol>
+      <h2>Profil</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs --> {% endcomment %}
+
+  <!-- ======= Team Section ======= -->
+ 
+  <section class="h-100 gradient-custom-2 team" id="team">
+    
+    <div class="container py-5 h-100 ">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <d class="col col-lg-9 col-xl-12">
+          <div class="card mb-4">
+            <div class="rounded-top text-white d-flex flex-row" style="background-color: #303179; height:200px;">
+              <div class="ms-4 mt-5 pb-4 d-flex flex-column" style="width: 15%; ">
+                <img src="{{profile.profile_pic.url}}"
+                  alt="Generic placeholder image" class=" img-thumbnail mt-4 mb-2 member-img"
+                  style="width: 75%; z-index: 1">
+                
+              </div>
+              <div class="" style="margin-top: 130px;">
+                <h5>@{{profile.user}}</h5>
+                <p class="fst-italic">{{profile.user.role|lower|capfirst}}</p>
+                
+              </div>
+            </div>
+            <div class="p-4 text-black" style="background-color: #f8f9fa;">
+              
+              
+            </div>
+            </div>
+           
+            <section id="portfolio" class="portfolio">
+              <div class="row portfolio-container">
+                <div class="portfolio-item filter-evaluasi">
+                  <div class="col col-lg-9 col-xl-12">
+                    <div class="card px-4 py-4">
+                      <form class="row g-3 mb-2" action="" method="POST">
+                        {% if userid.role == "USER" %} 
+                        {% csrf_token %} 
+                        <div class="col-md-3">
+                          <h5 class="label">Poin Pengguna : {{profile.points}}</h5>
+                        </div>
+                        <div class="col-md-3">
+                          <h5 class="label">Jumlah Translasi : {{trans_count}}</h5>
+                        </div>
+                        <div class="col-md-6">
+                          <h5 class="label">Visibilitas Nama Pengguna : {% if profile.anonym == True %}Terbatas{% else %}Publik{% endif %}</h5>
+                        </div>
+                        {% elif userid.role == "VERIFIKATOR" %}
+                        <div class="col-md-3">
+                          <h5 class="label">Jumlah Translasi Dinilai : {{ev_count}}</h5>
+                        </div>
+                        
+                        {% else %}
+                        <div class="col-md-12">
+                          <h5 class="label">Jumlah Unggahan Di-Unggah : {{post_count}}</h5>
+                        </div><br>
+                        {% endif %} 
+                       </form>
+                        
+                        <div class="modal-footer ">
+                          
+                          {% if error != "Null" %}
+                            <div class="label me-2 mb-2 text-danger">{{error}}</div>
+                          {% elif success != "Null" %}
+                            <div class="label me-2 mb-2 text-success">{{success}}</div>
+                          {% endif %}
+                          <a href="{% url 'users:update-profile' %}" type="button" class="btn btn-outline-dark me-2 mb-2" data-bs-ripple-color="dark" style="z-index: 1;">
+                            Edit profile
+                          </a>
+                          <button type="button" class="btn btn-outline-success me-2 mb-2" data-bs-toggle="modal" data-bs-target="#verticalycentered">Ganti Password</button>
+                        {% if userid.role == "USER" %}
+                            {% if status_user == 2 %}
+                              {% if status == 1 %}
+                                
+                                {% if is_candidate == False %}
+                                  
+                                {% endif %}
+                                  
+                                  
+                                {% else %}
+                                    
+                              {% endif %}
+                            {% else %}
+                                {% if userid.is_verified == 0 %}
+                                
+                                {% else %}
+                                  
+                                    {% if listed == 'False' %}
+                                     <button type="button" class="btn btn-primary text-align-center mb-2" data-bs-ripple-color="dark"  id="liveToastBtn">
+                                      Jadi Verifikator
+                                      </button>
+                                          {% else %}
+                                      <form action="" method="post" onsubmit="return confirm('Yakin ingin Membatalkan Pengajuan anda untuk menjadi Verifikator?');">
+                                      {% csrf_token %}
+                                      <input type="hidden" name="delete" id="delete" value="close">
+                                      <div class="d-grid gap-2 d-md-flex justify-content-md-end" >
+                                        
+                                        <input type="submit" name="cancel-form"  value="Batalkan Permintaan Verifikator" class="btn btn-dark text-wrap mb-2"></input>
+                                      </div>
+                                      </form>
+                                    {% endif %}
+                              
+                                {% endif %}
+                            <button type="button" class="btn btn-secondary mx-2 text-align-center me-2 mb-2"  data-bs-ripple-color="dark"  data-bs-toggle="modal" data-bs-target="#staticBackdrop5">
+                              Request Artikel
+                            </button>
+                            {% endif %}
+                          {% elif userid.role == "ADMIN" %}
+                            <a href="{% url 'daftar-kata' %}" class="user-list btn btn-info text-light me-2 mb-1" >
+                              <i class="bi bi-journal-text"></i> <span>Daftar Kata</span>
+                            </a>
+                            <a href="{% url 'permintaan-verifikator' %}" class="user-list btn btn-success me-2 mb-1" >
+                              <i class="bi bi-person-plus-fill"></i> <span>Permintaan Verifikator</span>
+                            </a>
+                            <a href="{% url 'daftar-user' %}" class="user-list btn btn-dark me-2 mb-1" >
+                              <i class="bi bi-person-lines-fill"></i> <span>Daftar User</span>
+                            </a>
+                            <a href="{% url 'requested-article' %}" class="user-list text-light btn btn-warning me-2 mb-1" >
+                              <i class="bi bi-file-earmark-arrow-down"></i> <span>Article Request</span>
+                            </a>
+                            <a href="#" class="add-article btn btn-secondary me-2 mb-1" data-bs-toggle="modal" data-bs-target="#jenisUpload" >
+                              <i class="bi bi-cloud-arrow-up"></i> <span>Post</span>
+                            </a>
+                          {% else %}
+                          <a href="{% url 'verifikasi-terjemahan' %}" class="user-list btn btn-info text-light me-2 mb-2" >
+                            <i class="bi bi-journal-text"></i> <span>Mulai Menilai</span>
+                          </a>
+                          {% endif %}
+                        </div>
+                  </div>
+                </div>
+                </div>
+                </div>
+              </div>
+                {% if userid.role == "ADMIN" %}
+                <div class="row portfolio-container">
+                  
+                  <div class="portfolio-item filter-evaluasi">
+                    <div class="col col-lg-9 col-xl-12">
+                      <div class="card mb-4 px-4 py-4">
+                        <table class="table" id="announce">
+                          
+                          <thead class="table border-start border-end">
+                            <tr>
+                              {% comment %} <th scope="col">#</th> {% endcomment %}
+                              <th scope="col">Pengumuman</th>
+                              <th scope="col">Statistik</th>
+                              <th scope="col">Updated</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                            {% for announcement in pengumuman  %}
+                              <tr>
+                                <td><a href="{{announcement.get_url}}">{{announcement.judul}}</a></td>
+                                <td>
+                                  Dilihat : {% get_hit_count for announcement %}<br>
+                                
+                                </td>
+                                <td colspan="2">
+                                  {{announcement.updated|date:"d-m-Y"}} <br>
+                                  
+                                </td>
+                              </tr>
+                          {% endfor %}
+                              
+                            
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card mb-4 px-4 py-4">
+                        <table class="table" id="article">
+                          
+                          <thead class="table border-start border-end">
+                            <tr>
+                              {% comment %} <th scope="col">#</th> {% endcomment %}
+                              <th scope="col">Artikel</th>
+                              <th scope="col">Statistik</th>
+                              <th scope="col">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                            {% for trns in trans %}
+                                  <tr>  
+                                    <td><span class="ms-2"> <a href="{{trns.get_url}}">{{trns.judul|safe}}</a></span> </td>
+                                    <td>
+                                      Dilihat :  <strong>{% get_hit_count for trns %} Kali</strong><br>
+                                      Translasi : <strong>{{trns.num_translasi}} Translasi </strong>
+                                    </td>
+                                    
+                                    <td>
+                                      {% if trns.status == True %}
+                                            <span class="badge rounded-pill text-bg-success">Open</span>
+                                            {% else %}
+                                            <span class="badge rounded-pill text-bg-danger">Closed</span>
+                                      {% endif %}
+                                    </td>
+                                  </tr>
+                              {% endfor %}  
+                              
+                            
+                            
+                          </tbody>
+                        </table>
+                  </div>
+                  </div>
+                  </div>
+          
+                </div>
+                {% else %}
+                <div class="row portfolio-container">
+                  
+                  <div class="portfolio-item filter-evaluasi">
+                    <div class="col col-lg-9 col-xl-12">
+                      <div class="card mb-4 px-4 py-4">
+                        <table class="table" id="reqarticle">
+                          
+                          <thead class="table border-start border-end">
+                            <tr>
+                              {% comment %} <th scope="col">#</th> {% endcomment %}
+                              <th scope="col">Request Anda</th>
+                              <th scope="col">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                            {% for req in requested %}
+                                  <tr>  
+                                    <td><span class="ms-2"> <a href="{{req.url_berita}}">{{req.url_berita}}</a></span></td>
+                                    <td><span {% if req.status == "Diproses" %} class="ms-2 text-warning" {% elif req.status == "Diterima" %} class="ms-2 text-success" {% else %}{% endif %} > {{req.status}}</a></span></td>
+                                  </tr>
+                              {% endfor %}  
+                              
+                            
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card mb-4 px-4 py-4">
+                        <table class="table" id="article">
+                          
+                          <thead class="table border-start border-end">
+                            <tr>
+                              {% comment %} <th scope="col">#</th> {% endcomment %}
+                              <th scope="col">Artikel yang Diterjemahkan</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                            {% for trns in trans %}
+                            <tr>
+                              <td><a href="{% url 'unggahan' trns|slugify %}">{{trns|safe}}</a></td>
+                              
+                              
+                            </tr>
+                              {% endfor %}  
+                              
+                            
+                            
+                          </tbody>
+                        </table>
+                  </div>
+                  </div>
+                  </div>
+          
+                </div>
+                {% endif %}
+  
+                
+          
+              </div>
+            </section><!-- End Portfolio Section -->
+        </div>
+      </div>
+    </div>
+  </section>
+  {% if userid.role == "USER" %} 
+    {% if profile.points >= 1 and trans_count >= 1 %}
+      <div class="toast-container position-fixed top-0 end-0 me-4" style="margin-top:5rem">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"  data-bs-autohide="false">
+          <div class="toast-header">
+            <span class="fs-5 text-success me-1"><i class="bi bi-check-lg"></i></span>
+            <strong class="me-auto text-success">Memenuhi Syarat</strong>
+            {% comment %} <small>11 mins ago</small> {% endcomment %}
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+
+            {{profile.user.role|lower|capfirst}}, <span class="fw-bold" style="color: #ED7966;">{{profile.fullname|title}}</span> anda telah memenuhi syarat untuk mengajukan diri sebagai verifikator. <strong>Ajukan diri sebagai Verifikator?</strong>
+            <div class="mt-1 pt-1 border-top">
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Batal</button>
+              <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#regModal" data-bs-dismiss="toast">Jadikan saya Verifikator</button>
+            </div>
+          </div>
+        </div>
+      </div>
+            <!-- Modal -->
+      <div class="modal fade" id="regModal" tab index="-1" aria-labelledby="regModalLabel2" aria-hidden="true">
+        <div class="modal-dialog d-flex justify-content-center" data-bs-autohide="false">
+            <div class="modal-content w-75">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="regModalLabel2">Daftar Verifikator</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                      {% csrf_token %}
+                        <input type="hidden" name="tipe" id="tipe" value="Individual">
+                        <!-- Name input -->
+                        {{ form.has_errors }}
+                        <div class="form-outline mb-2">
+                          {{form.nama_lengkap}}
+                        </div>
+                       
+                        <!-- Email input -->
+                        <div class="form-outline mb-2">
+                          <input type="email" name="email" id="email"  class= "form-control mx-auto"style= "text-align:center;" placeholder="{{user.email}}" value="{{user.email}}" readonly>
+                        </div>
+
+                        <div class="form-outline mb-2">
+                          {{form.field}}
+                        </div>
+
+                        <div class="form-outline mb-2">
+                          {{form.job_role}}
+                        </div>
+
+                        <div class="form-outline mb-2">
+                          {{form.contact}}
+                        </div>
+
+                        <div class="form-outline mb-2">
+                          {{form.address}}
+                        </div>
+                        
+                        <!-- password input -->
+                        <div class="form-outline mb-2">
+                          <label for="" class="d-grid gap-2 d-md-flex justify-content-md-center mt-2">Bukti(.pdf)</label>
+                            {{form.proof}}
+                        </div>
+                        <!-- Submit button -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-2">
+                          <input type="submit" name="new-verif" value="Mendaftar" class="btn btn-dark"></input>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+      <!-- Modal -->
+    {% endif %}
+    <div class="toast-container position-fixed top-0 end-0 me-4" style="margin-top:5rem">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"  data-bs-autohide="false">
+        <div class="toast-header">
+          <span class="fs-5 text-danger me-1"><i class="bi bi-x-circle-fill"></i></span>
+          <strong class="me-auto text-danger">Tidak Memenuhi Syarat</strong>
+          {% comment %} <small>11 mins ago</small> {% endcomment %}
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+
+          {{profile.user.role|lower|capfirst}}, <span class="fw-bold" style="color: #ED7966;">{{profile.fullname|title}}</span> anda tidak memenuhi syarat untuk menjadi verifikator, <strong>tingkatkan poin dan translasi anda</strong> lalu coba lagi.
+        </div>
+      </div>
+    </div>  
+    <!-- Modal -->
+    <div class="modal top fade" id="staticBackdrop5" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
+      <div class="modal-dialog modal-dialog-centered text-center d-flex justify-content-center modal-xl" >
+          <div class="modal-content w-75">
+              <div class="modal-body p-4">
+                  
+                <div class="text-dark">
+                  {% comment %} {% url 'search' %} {% endcomment %}
+                  <form action="" role="form" method="POST">
+                    {% csrf_token %}
+                        <h5>Request Artikel Berita</h5>
+                          <div class="form-outline mb-4">
+                              <input type="text" id="request_artikel" name="request_artikel" class="form-control" placeholder="Supported URL ['https://www.cnnindonesia.com/', 'https://www.tempo.co/', 'https://www.kompas.com/']" />
+                          </div>
+                          <!-- Submit button -->
+                          <input type="submit" name="req-berita" value="Request" class="btn btn-dark"></input>
+                      </div>
+                    </div>
+                </form>
+          </div>
+      </div>
+    </div>
+  {% endif %}
+  
+  {% if userid.role == "ADMIN" %}
+    
+    
+  <div class="modal top fade" id="jenisUpload" tabindex="-1" aria-labelledby="jenisUploadLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
+    <div class="modal-dialog modal-dialog-centered text-center d-flex justify-content-center modal-lg" >
+        <div class="modal-content w-75">
+            <div class="modal-body p-4">
+                
+              <div class="text-dark">
+                
+                      <h5>Unggah Unggahan Baru</h5>
+                        <!-- password input -->
+                        <div class="d-grid gap-2 d-md-flex  justify-content-md-center mb-3 mt-3">
+                          <a href="{% url 'tambah-pengumuman' %}" class="user-list btn btn-success" >
+                            <i class="bi bi-file-earmark-text"></i> <span>Pengumuman</span>
+                          </a>
+                          <a href="{% url 'unggah-artikel' %}" class="add-article btn btn-warning text-light" >
+                            <i class="bi bi-cloud-arrow-up"></i> <span>Subjek Translasi</span>
+                          </a>
+                        </div>  
+                        
+                    </div>
+                  </div>
+        </div>
+    </div>
+  </div>
+  
+  {% endif %}
+  <div class="modal fade" id="verticalycentered" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ganti Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="row g-3" action="" method="POST">
+            {% csrf_token %} 
+            <div class="col-md-12">
+              <input type="password" class="form-control" placeholder="Password Lama" name="old">
+            </div>
+            
+            <div class="col-md-6">
+              <input type="password" class="form-control" placeholder="Password Baru" name="password">
+            </div>
+            <div class="col-md-6">
+              <input type="password" class="form-control" placeholder="Konfirmasi Password Baru" name="confirm">
+            </div>
+            
+            
+          </div>
+          <div class="modal-footer">
+            <input type="submit" name="reset-pass" value="Konfirmasi" class="btn btn btn-primary"></input>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main><!-- End #main -->
+
+{% endblock content %}

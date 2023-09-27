@@ -1,0 +1,84 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+
+<main id="main">
+
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li>Konten Artikel URL</li>
+      </ol>
+      <h2>Konten Artikel</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs -->
+
+  <!-- ======= Contact Section ======= -->
+  <section id="contact" class="contact">
+    <div class="container">
+
+     
+      <div class="row">
+        <div class="col-lg-12">
+          <form action="." method="post" role="form" class="php-email-form">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-12 form-group mt-3">
+                <label for="url">URL Berita</label>
+                <input type="text" name="url" class="form-control text-break" id="url" placeholder="{{artikel.a_url}}" value="{{artikel.a_url}}" required readonly>
+                <input type="hidden" name="portal" class="form-control text-break" id="portal" value=" {{artikel.domain}}" required readonly>
+                
+              </div>
+              <div class="col-md-12 form-group mt-3 ">
+                <label for="judul">Judul Berita</label>
+                <input type="text" class="form-control" name="judul" id="judul" placeholder="{{artikel.title}} " value="{{artikel.title}}"  required readonly>
+              </div>
+            </div>
+                        
+            <div class="form-group mt-3">
+              <label for="konten-area">Konten Berita</label>
+              <textarea class="form-control" name="konten-area" rows="5" placeholder="{{artikel.konten}}"   required >{{artikel.konten}}</textarea>
+              {% comment %} <input type="hidden" class="form-control" name="konten" id="konten" placeholder="{{artikel.konten}} " value="{{artikel.konten}}"  required readonly> {% endcomment %}
+              
+            </div>
+
+            <div class="row mt-3 mb-4">
+              <div class="col-md-6 form-group">
+                <label for="kategori">Kategori Berita</label>
+                <select class="form-select" name="kategori" id="kategori" required>
+                
+                  <option>Kategori</option>
+                {% for category in category %}
+                  <option value="{{category.id}}" name="kategori" id="kategori">{{category.title}}</option>
+                {% endfor %}
+                </select>
+               
+              </div>
+             
+            </div>
+
+            <div class="text-center kembali">
+              {% if identifier == "" %}
+              <a href="{% url 'unggah-artikel' %}" class="btn btn-secondary text-center">Kembali</a>
+              {% else %}
+              <a href="{% url 'requested-article' %}" class="btn btn-secondary text-center">Kembali</a>
+              
+              {% endif %}
+              <button type="submit" class="text-center btn btn-dark">Unggah Artikel</button>
+            </div>
+            
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section><!-- End Contact Section -->
+
+</main><!-- End #main -->
+
+{% endblock content %}

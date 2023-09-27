@@ -1,0 +1,33 @@
+          
+      {% load el_pagination_tags %}
+      {% load hitcount_tags %}
+
+        {% paginate artikel %}
+          {% for article in artikel  %}
+                    <tr>
+                      
+                      <td>
+                        {% if article.status == True %}
+                        <span class="badge rounded-pill text-bg-success">Open</span>
+                        {% else %}
+                        <span class="badge rounded-pill text-bg-danger">Closed</span>
+                        {% endif %}
+                        <a href="{{article.get_url}}">{{article.judul}}</a><br>
+                        <span class="text-secondary">Diunggah : <strong>{{article.created|date}}</strong></span>
+
+                      </td>
+                      <td colspan="2">
+                        <i class="bi bi-eye-fill"></i> <strong>{% get_hit_count for article %} Kali</strong><br>
+                        <i class="bi bi-file-earmark-check"></i> <strong>{{article.num_translasi}} Translasi </strong>
+                      </td>
+                      {% comment %} <td style="font-size:14px">
+                        
+                        Terakhir Diterjemahkan : <br><strong>{{article.last_trans.updated|date}}</strong> <br>
+                        Oleh : <strong>{{article.last_trans.user.fullname|title}}</strong>
+                        
+                      </td> {% endcomment %}
+                      
+
+                    </tr>
+          {% endfor %}
+        {% show_more_post %}

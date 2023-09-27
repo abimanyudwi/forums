@@ -1,0 +1,147 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+{% load el_pagination_tags %}
+<main id="main">
+
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="{% url 'index' %}">Beranda</a></li>
+        <li>Forum</li>
+      </ol>
+      <h2>Forum</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs -->
+
+  <!-- ======= About Section ======= -->
+  
+
+  
+
+  <!-- ======= Posts Section ======= -->
+  <section id="posts-table" class="posts-table">
+    <div class="container">
+
+      
+
+      <div class="row">
+        <div class="col-lg-12 shadow p mb-2 bg-body rounded">
+          <div class="posts-item">
+            <h2 class="text-center">Forum</h2>
+            <div class="d-grid gap-2 d-md-flex  justify-content-md-end">
+           {% if request.user.role == "ADMIN" %}
+            <a type="button" class="btn btn-dark mb-2 text-light" href="{% url 'unggah-artikel' %}">
+              <i class="bi bi-journal-plus"></i> <span>Unggah Artikel</span>
+            </a  >
+           {% endif %}
+            </div>
+            <table class="table align-middle ">
+              <!-- Tabel Pengumuman -->
+                <thead class="table-secondary border-start border-end">
+                  <tr>
+                    <th scope="col" colspan="7"><span class="badge rounded-pill text-bg-secondary fs-6"><i class="bi bi-lock"></i><i class="bi bi-pin-angle"></i></span> Pengumuman </th>
+                  </tr>
+                </thead>
+                <thead class="border-start border-end">
+                  <tr class="border-start border-end" style="display:none;">
+                    <th scope="col">Postingan</th>
+                    <th scope="col">Statistik</th>
+                    <th scope="col">Terakhir Di-Update</th>
+                    <th scope="col">Status</th>                    
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>                    
+                  </tr>
+                </thead>
+                <tbody class="border">
+                
+                  {% for announcement in pengumuman  %}
+                  <tr>
+                    <td><span class="ms-2"> <a href="{{announcement.get_url}}">{{announcement.judul}}</a> </span> </td>
+                    <td colspan="4">
+                      <i class="bi bi-eye-fill"></i> {% get_hit_count for announcement %}<br>
+                    
+                    </td>
+                    
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              <!-- End Tabel Pengumuman -->
+
+                {% comment %} <thead class="table-borderless">
+                  <tr>
+                    <th scope="col" colspan="6" ></th>
+                  </tr>
+                </thead> {% endcomment %}
+
+              <!-- Tabel Unggahan -->
+                <thead class="table-secondary border-start border-end">
+                  
+                  <tr>
+                    <th scope="col" valign="middle" colspan="2" >Kategori Berita ({{num_cat}})</th>
+                    <th scope="col" colspan="5" >
+                     
+                    </div>
+                    </th>
+                  </tr>
+                  
+                </thead>
+                <thead class="border-start border-end">
+                  <tr class="border-start border-end" style="display:none;">
+                   
+                    <th scope="col">Postingan</th>
+                    <th scope="col">Statistik</th>
+                    <th scope="col">Terakhir Di-Update</th>
+                    <th scope="col">Status</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                   
+                  </tr>
+                </thead>
+                <tbody class="border">
+                  
+                  {% for article in artikel  %}
+                    <tr>
+                      
+                      <td >
+                        <span class="ms-2"> <a href="{{article.get_cat}}" style="color:#e96b56;">{{article.title}}</a></span> <br>
+                        <span class="ms-2"> <b>Latest:</b><a href="{{article.last_post.get_url}}" class="ms-2">{{article.last_post}}</a></span> 
+                    <br><span class="ms-2"> on <small> <strong> {{article.last_post.created|date}}</small> </strong></span> 
+                      </td>
+                      <td colspan="2">
+                        <i class="bi bi-file-earmark-check"></i> <strong>{{article.num_posts}} Artikel </strong>
+                       
+                      </td>
+                      {% comment %} <td style="font-size:14px">
+                        
+                        Terakhir Diterjemahkan : <br><strong>{{article.last_trans.updated|date}}</strong> <br>
+                        Oleh : <strong>{{article.last_trans.user.fullname|title}}</strong>
+                        
+                      </td> {% endcomment %}
+                      
+
+                    </tr>
+                  {% endfor %}
+                    
+                
+                </tbody>
+              <!-- End Tabel Unggahan -->
+            </table>
+           
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- End Posts Section -->
+
+</main><!-- End #main -->
+
+{% endblock content %}

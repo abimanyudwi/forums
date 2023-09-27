@@ -1,0 +1,9 @@
+{% autoescape off %}
+Hello,
+
+Permintaan anda untuk menjadi verifikator telah diterima dan akun verifikator anda telah dibuat silahkan kunjungi {{domain}} untuk melakukan login dengan informasi akun dibawah ini :
+
+username = {{user}}
+password = {{token}}
+
+{% endautoescape %}

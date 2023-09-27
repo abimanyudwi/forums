@@ -1,0 +1,88 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+{% load el_pagination_tags %}
+<main id="main">
+
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="{% url 'index' %}">Beranda</a></li>
+        <li><a href="{% url 'forum' %}">Forum</a></li>
+        <li>{{kategori}}</li>
+      </ol>
+      <h2>Forum</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs -->
+
+  <!-- ======= About Section ======= -->
+  
+
+  
+
+  <!-- ======= Posts Section ======= -->
+  <section id="posts-table" class="posts-table">
+    <div class="container">
+
+      
+
+      <div class="row">
+        <div class="col-lg-12 shadow p mb-2 bg-body rounded">
+          <div class="posts-item">
+            <h2 class="text-center">Semua Unggahan ({{kategori}})</h2>
+            <div class="d-grid gap-2 d-md-flex  justify-content-md-end">
+           {% if request.user.role == "ADMIN" %}
+            <a type="button" class="btn btn-dark mb-2 text-light" href="{% url 'unggah-artikel' %}">
+              <i class="bi bi-journal-plus"></i> <span>Unggah Artikel</span>
+            </a  >
+           {% endif %}
+            </div>
+            <table class="table" id="table-requested">
+                          
+              <thead class=" border-start border-end">
+                <tr>
+                  {% comment %} <th scope="col">#</th> {% endcomment %}
+                  <th scope="col">Artikel</th>
+                  <th scope="col">Statistik</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                {% for article in artikel %}
+                      <tr>  
+                        <td>
+                          {% if article.status == True %}
+                          <span class="badge rounded-pill text-bg-success">Open</span>
+                          {% else %}
+                          <span class="badge rounded-pill text-bg-danger">Closed</span>
+                          {% endif %}
+                          <a href="{{article.get_url}}">{{article.judul}}</a><br>
+                          <span class="text-secondary">Diunggah : <strong>{{article.created|date}}</strong></span>
+  
+                        </td>
+                        <td>
+                          Dilihat :  <strong>{% get_hit_count for article %} Kali</strong><br>
+                          Translasi : <strong>{{article.num_translasi}} Translasi </strong>
+                        </td>
+                      </tr>
+                  {% endfor %}  
+                  
+                
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- End Posts Section -->
+
+</main><!-- End #main -->
+
+{% endblock content %}

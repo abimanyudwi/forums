@@ -1,0 +1,176 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+
+<main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+      <div class="container">
+
+        <ol>
+          <li><a href="{% url 'index' %}">Home</a></li>
+          <li><a href="{% url 'forum' %}">Forum</a></li>
+          {% comment %} <li><a href="{% url 'unggahan' %}">[CNN Indonesia] Naik Kereta Cukup Pakai Face Recognition, Cek 4 Masalahnya</a></li> {% endcomment %}
+          <li>{{title}}</li>
+        </ol>
+        {% comment %} <h2>[CNN Indonesia] Naik Kereta Cukup Pakai Face Recognition, Cek 4 Masalahnya</h2> {% endcomment %}
+
+      </div>
+    </section><!-- End Breadcrumbs -->
+
+    <!-- ======= Blog Single Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <h2 class="entry-title text-center mb-4" style="color:#ED7966;">
+           Nilai Terjemahan
+          </h2>
+          <div class="col-lg-6 entries">
+
+            <article class="entry entry-single">             
+              <h2 class="entry-title">
+                <a href="blog-single.html">[CNN Indonesia] Naik Kereta Cukup Pakai Face Recognition, Cek 4 Masalahnya</a>
+              </h2>
+
+              {% comment %} <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">John Doe</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-single.html"><time datetime="2020-01-01">Jan 1, 2020</time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">12 Comments</a></li>
+                </ul>
+              </div> {% endcomment %}
+
+              <div class="entry-content">
+                <hr>
+               
+
+                <p>
+                    Jakarta, CNN Indonesia -- PT Kereta Api Indonesia (KAI) sedang mengujicoba fitur pengenalan wajah (face recognition) di pintu keberangkatan Stasiun Bandung. Meski sepintas menyingkat waktu pengecekan, fitur ini memilki sejumlah masalah.
+                </p>
+
+               
+
+              </div>
+
+             
+
+            </article><!-- End blog entry -->
+
+            
+
+            
+
+          </div><!-- End blog entries list -->
+          <div class="col-lg-6 entries">
+
+            <article class="entry entry-single">      
+              <h5>
+                Translasi Oleh : <a href="{% url 'lihat-profil' %}">Unima</a> 
+              </h5>       
+              
+
+              {% comment %} <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">John Doe</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-single.html"><time datetime="2020-01-01">Jan 1, 2020</time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">12 Comments</a></li>
+                </ul>
+              </div> {% endcomment %}
+
+              <div class="entry-content">
+                <hr>
+               
+
+                <p>
+                    Jakarta, CNN Indonesia -- PT Kereta Api Indonesia (KAI) sedang mengujicoba fitur pengenalan wajah (face recognition) di pintu keberangkatan Stasiun Bandung. Meski sepintas menyingkat waktu pengecekan, fitur ini memilki sejumlah masalah.
+                </p>
+
+               
+
+              </div>
+
+             
+
+            </article><!-- End blog entry -->
+
+            
+
+            
+
+          </div><!-- End blog entries list -->
+
+          <div class="col-lg-8 mx-auto">
+
+            <div class="sidebar">
+
+                                             
+              <div class="reply-form">
+                <h5>
+                  Beri Nilai
+                </h5>
+                <form action="">
+                  
+                  <div class="row mt-3 mb-4">
+                    <div class="col-md-3 form-group">
+                      <label for="pt1">Poin 1</label>
+                      <select class="form-select" name="pt1" id="pt1" aria-label="Default select example" required>
+                        <option selected>--Pilih Nilai--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                     
+                    </div>
+                    <div class="col-md-3 form-group mt-3 mt-md-0">
+                      <label for="pt2" class="fst-italic">Poin 2</label>
+                      <select class="form-select" name="pt2" id="pt2" aria-label="Default select example" required>
+                        <option selected>--Pilih Nilai--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 form-group mt-3 mt-md-0">
+                      <label for="pt3" class="fst-italic">Poin 3</label>
+                      <select class="form-select" name="pt3" id="pt3" aria-label="Default select example" required>
+                        <option selected>--Pilih Nilai--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 form-group mt-3 mt-md-0">
+                      <label for="pt4" class="fst-italic">Poin 4</label>
+                      <select class="form-select" name="pt4" id="pt4" aria-label="Default select example" required>
+                        <option selected>--Pilih Nilai--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Terjemahkan</button>
+
+                </form>
+
+              </div>
+
+            </div><!-- End sidebar -->
+
+          </div><!-- End blog sidebar -->
+
+        </div>
+
+      </div>
+    </section><!-- End Blog Single Section -->
+
+  </main><!-- End #main -->
+
+{% endblock content %}

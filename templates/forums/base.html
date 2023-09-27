@@ -1,0 +1,396 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+  
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{{title}}</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href= {% static  "assets/img/title-logo.png" %} rel="icon">
+  <link href= {% static "assets/img/title-logo.png" %} rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href= {% static "assets/vendor/animate.css/animate.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/bootstrap/css/bootstrap.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/bootstrap-icons/bootstrap-icons.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/boxicons/css/boxicons.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/glightbox/css/glightbox.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/swiper/swiper-bundle.min.css" %} rel="stylesheet">
+  {{ forms.media }}
+  <!-- Template Main CSS File -->
+  <link href= {% static "assets/css/style.css" %} rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Eterna - v4.9.0
+  * Template URL: https://bootstrapmade.com/eterna-free-multipurpose-bootstrap-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+ 
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="d-flex align-items-center">
+    <div class="container d-flex justify-content-between align-items-center">
+
+      <div class="logo">
+        {% comment %} <h1><a href="index.html">Forums</a></h1> {% endcomment %}
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <a href="{% url 'index' %}"><img src= {% static "assets/img/logo.png" %} alt="" class="img-fluid"></a>
+      </div>
+      
+      <nav id="navbar" class="navbar">
+        <ul>
+            
+            <li>
+                <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5"><i class="bi bi-search fs-5" ></i></a>
+            </li>
+            <li>
+                <a {% if section == "Beranda" %}  class="active" {% endif %} href="{% url 'index' %}">Utama</a>
+            </li>
+            <li>
+                <a {% if section == "Forum" %}  class="active" {% endif %} href="{% url 'forum' %}">Forum</a>
+            </li>
+            
+            {% if request.user.is_authenticated %}
+              <li>
+                <a {% if section == "Profil" %}  class="active" {% endif %} href="{% url 'profil' %}">Profil</a>
+              </li>
+              
+              <li>
+                <a class="" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">Keluar <i class="bi bi-box-arrow-right text-danger" style="font-size:20px"></i></a>
+              </li>
+            {% else %}
+            <li {% if section == "Profil" %}  class="active dropdown" {% endif %} class="dropdown">
+              <a href="#"><span>Masuk/Mendaftar</span> <i class="bi bi-chevron-down"></i></a>
+              <ul>
+                <li><a class="active"  href="{% url 'users:login' %}">Masuk</a></li>
+                <li><a class="active" href="{% url 'users:register' %}">Mendaftar</a></li>
+              </ul>
+            </li>
+            {% endif %}
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+    
+  </header><!-- End Header -->
+  
+  {% if request.user.is_authenticated %}
+      {% if profile == 'empty' %}
+      <div class="alert alert-warning" style="margin-bottom: -1px;" role="alert">
+        <span class="pe-2"><i class="bi bi-exclamation-triangle-fill"></i></span>Anda Belum Melengkapi Profil, sebagian fitur dibatasi. <span ><u><a href="{% url 'users:update-profile' %}" class="alert-link">Lengkapi Profil</a></u></span>.
+      </div>
+    {% else %}
+    {% endif %}
+  {% endif %}
+
+  {% if request.user.is_verified == False %}
+      
+      <div class="alert alert-warning" style="margin-bottom: -1px;" role="alert">
+        <span class="pe-2"><i class="bi bi-exclamation-triangle-fill"></i></span>Anda Belum Melakukan Konfirmasi E-Mail, sebagian fitur dibatasi. <span><u><a href="#" class="alert-link">Periksa E-Mail anda</a></u></span>.
+      </div>
+   
+  {% endif %}
+    
+      
+    
+    {% block content %}
+        
+    
+
+
+    {% endblock content %}
+        
+
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+   
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3 col-md-6 footer-contact">
+                <h4> <i class="bi bi-graph-up ms-1 pe-1"></i> Statistik Forum</h4>
+                <p>
+                    <table class="table table-borderless table-sm " >
+                        <thead>
+                          <tr >
+                          
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                            <th scope="col "></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            
+                            <td ><span><strong>Total Unggahan</strong></span></td>
+                            <td >:</td>
+                            <td>{{jlh_post}}</td>
+                          </tr>
+                          <tr>
+                          
+                            <td><span><strong>Total Terjemahan</strong></span></td>
+                            <td>:</td>
+                            <td>{{jlh_trans}}</td>
+                          </tr>
+                          <tr>
+                            <td> <span><strong>Total User</strong></span></td>
+                            <td>:</td>
+                            <td>{{jlh_user}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                 
+                </p>
+            </div>
+
+            <div class="col-lg-3 col-md-6 footer-links">
+                <h4>Akses Cepat</h4>
+                <ul>
+                <li><i class="bx bx-chevron-right"></i> <a href="{% url 'index' %}">Beranda</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="{% url 'forum' %}">Forum</a></li>
+                {% if user.is_authenticated != True %}
+                <li><i class="bx bx-chevron-right"></i> <a href="{% url 'users:login' %}">Masuk</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="{% url 'users:register' %}">Mendaftar</a></li>
+                
+               {% endif %}
+                </ul>
+            </div>
+
+          
+          
+            
+            {% if user.is_authenticated %}
+              <div class="col-lg-3 col-md-6 footer-links">
+                <h4>Menu Pengguna</h4>
+                <ul>
+                <li><i class="bx bx-chevron-right"></i> <a href="{% url 'profil' %}">Profil</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="{% url 'users:logout' %}">Log Out</a></li>
+                
+                </ul>
+              </div>
+            {% endif %}
+         
+            
+
+            <div class="col-lg-3 col-md-6 footer-info">
+                <h3>Tentang Kami</h3>
+                <p>Forum Translasi Bahasa Indonesia-Manado adalah platform yang dibangun dengan tujuan mengumpulkan data bahasa Manado dari hasil terjemahan artikel berita dalam bahasa Indonesia ke bahasa Manado oleh penutur asli bahasa Manado</p>
+                <div class="social-links mt-2">
+                
+                <a href="https://web.facebook.com/abimanyu.dwi" target="_blank" rel="noopener noreferrer" class="facebook"><i class="bx bxl-facebook"></i></a>
+                <a href="https://www.instagram.com/abimanyudwi/" target="_blank" rel="noopener noreferrer" class="instagram"><i class="bx bxl-instagram"></i></a>
+                
+                </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="copyright">
+       Template &copy; Copyright by <strong><span>Eterna</span></strong>. All Rights Reserved <br>
+       Forums &copy; Copyright by <strong><span>Abimanyu Dwisuprapto</span></strong>. All Rights Reserved
+      </div>
+     
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/eterna-free-multipurpose-bootstrap-template/ -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+    
+    {% comment %} Search Modal {% endcomment %}
+        <!-- Button trigger modal -->
+  
+
+    <!-- Modal -->
+    <div class="modal top fade" id="staticBackdrop5" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
+      <div class="modal-dialog modal-dialog-centered text-center d-flex justify-content-center modal-lg" >
+          <div class="modal-content w-75">
+              <div class="modal-body p-4">
+                  
+                <div class="text-dark">
+                  {% comment %} {% url 'search' %} {% endcomment %}
+                  <form action="{% url 'search' %}" role="form" method="GET">
+                        <h5>Cari Artikel</h5>
+                          <!-- password input -->
+                          <div class="form-outline mb-4">
+                              <input type="text" id="form1" name="q" class="form-control" placeholder="Cari Artikel" />
+
+                              <div class="form-check form-check-inline mt-3 fs-5">
+                                <input class="form-check-input" type="radio" id="search-opt1" value="Judul" name="search-box" />
+                                <label class="form-check-label" for="search-opt1">Judul</label>
+                              </div>
+                              <div class="form-check form-check-inline mt-3 fs-5">
+                                <input class="form-check-input" type="radio" id="search-opt2" value="Content" name="search-box"/>
+                                <label class="form-check-label" for="search-opt2">Isi Artikel</label>
+                              </div>
+                          </div>
+                          <!-- Submit button -->
+                          <button type="submit" name="search" class="btn btn-secondary">Cari</button>
+                      </div>
+                    </div>
+                </form>
+          </div>
+      </div>
+    </div>
+  <!-- Modal -->
+
+  <!-- Modal Logout -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-dark">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="logoutModalLabel">Keluar dari forum</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Anda Yakin Ingin Keluar dari Akun Anda?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <a class="btn btn-danger" href="{% url 'users:logout' %}">Keluar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src= {% static "assets/vendor/purecounter/purecounter_vanilla.js" %}></script>
+  <script src= {% static "assets/vendor/bootstrap/js/bootstrap.bundle.min.js" %}></script>
+  <script src= {% static "assets/vendor/glightbox/js/glightbox.min.js" %}></script>
+  <script src= {% static "assets/vendor/isotope-layout/isotope.pkgd.min.js" %}></script>
+  <script src= {% static "assets/vendor/swiper/swiper-bundle.min.js" %}></script>
+  <script src= {% static "assets/vendor/waypoints/noframework.waypoints.js" %}></script>
+  <script src= {% static "assets/vendor/php-email-form/validate.js" %}></script>
+  
+
+  <!-- Template Main JS File -->
+  <script src= {% static "assets/js/main.js" %}></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#article').DataTable();
+  });
+  </script>
+
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#announce').DataTable();
+  });
+  </script>
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#reqarticle').DataTable();
+  });
+  </script>
+
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#table-author').DataTable();
+  });
+  </script>
+
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#table-requested').DataTable();
+  });
+  </script>
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#table-verifikator').DataTable({
+        pageLength: 5
+    });
+  });
+  </script>
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#table-kata').DataTable({
+        columnDefs: [
+          {"className": "dt-center", "targets": "_all"}
+        ]
+      } );
+  });
+  </script>
+  <script type= "text/javascript">
+    $(document).ready(function () {
+      $('#table-verifikator-request').DataTable({
+        columnDefs: [
+          {"className": "dt-left", "targets": "_all"}
+        ]
+      } );
+  });
+  </script>
+  <script type= "text/javascript">
+    const toastTrigger = document.getElementById('liveToastBtn')
+    const toastLiveExample = document.getElementById('liveToast')
+    if (toastTrigger) {
+      toastTrigger.addEventListener('click', () => {
+        const toast = new bootstrap.Toast(toastLiveExample)
+
+        toast.show()
+      })
+    }
+  </script>
+  <script type= "text/javascript">
+    const toastTrigger = document.getElementById('liveToastBtn')
+    const toastLiveExample = document.getElementById('liveToast')
+    if (toastTrigger) {
+      toastTrigger.addEventListener('click', () => {
+        const toast = new bootstrap.Toast(toastLiveExample)
+
+        toast.show()
+      })
+    }
+  </script>
+
+  <script>
+    tinyMCE.init({
+      
+      selector: "#notecontent",  // change this value according to your HTML
+      'width': '100%',
+      'height': 320
+    });
+    </script>
+    
+    
+  
+
+</body>
+
+</html>

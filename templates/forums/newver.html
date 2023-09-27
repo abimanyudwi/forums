@@ -1,0 +1,167 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+
+<main id="main">
+{% comment %} 
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li>Profil</li>
+      </ol>
+      <h2>Profil</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs --> {% endcomment %}
+
+  <!-- ======= Team Section ======= -->
+  <section class="gradient-custom-2 team" id="team">
+    <div class="container py-5" style="height:100%">
+      <div class="row d-flex justify-content-center align-items-center h-1000">
+        <div class="row">
+          <div class="col-12 col-lg-7">
+              <div class="card border-0 shadow">
+                  <div class="card-header border-gray-100 d-flex justify-content-between align-items-center " style="background-color: #303179; color: #ffff;">
+                      <h2 class="h4 mt-2">Calon Verifikator</h2>
+                      
+                  </div>
+                  <div class="row">
+                      <div class="col-12">
+                          <div class="card border-0 shadow components-section">
+                              <div class="card-body">     
+                                  
+                                 
+                                  <!-- End of Title -->
+                                  <div class="row">
+                                      <div class="col-md-6">
+                                          <div class="mb-3">
+                                              {% comment %} <span class="h6 fw-bold">File Properties</span> {% endcomment %}
+                                          </div>
+                                          <ul>
+                                              <li>Nama Lengkap : <strong>{{newv.nama_lengkap}}</strong></li>
+                                              <li>Email : <strong>{{newv.email}}</strong></li>
+                                              <li>Bidang : <strong>{{newv.field}}</strong></li>
+                                              
+                                              
+                                          </ul>
+                                          
+                                      </div>
+                                      <div class="col-md-6">
+                                          <div class="mt-5 mb-3 mt-sm-0">
+                                              {% comment %} <span class="h6 fw-bold">File Status</span> {% endcomment %}
+                                          </div>
+                                          <ul>
+                                              <li>Posisi/Jabatan : <strong>{{newv.job_role}}</strong></li>
+                                              <li>Kontak : <strong>{{newv.contact}}</strong></li>
+                                              <li>Alamat : <strong>{{newv.address}}</strong></li>
+                                              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                             
+                                              </div>
+                                          </ul>
+                                      </div>
+                                  </div>
+                                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                      <a href="{% url 'permintaan-verifikator' %}" class="btn btn-secondary d-inline-flex align-items-center" >
+                                          Kembali
+                                      </a>
+                                      <button type="button" class="btn btn-primary d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#preview-modal">
+                                          Bukti
+                                      </button>
+                                      {% comment %} <button type="button" class="btn btn-primary d-inline-flex align-items-center">
+                                          Download
+                                          <svg class="icon icon-xxs ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z" clip-rule="evenodd" /></svg>
+                                      </button> {% endcomment %}
+                                  </div>
+                                  
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-12 col-lg-5">
+              <div class="card border-0 shadow">
+                  <div class="card-header border-gray-100 d-flex justify-content-between align-items-center " style="background-color: #303179; color: #ffff;">
+                      <h2 class="h4 mt-2">Daftarkan Verifikator</h2>
+                      
+                  </div>
+                  <div class="row">
+                      <div class="col-12">
+                          <div class="card border-0 shadow components-section">
+                              <div class="card-body">     
+                                  
+                                <form action="" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="fullname" id="fullname" value="{{newv.nama_lengkap}}">
+                                    <input type="hidden" name="tipe" id="tipe" value="{{newv.tipe}}">
+                                    <input type="hidden" name="field" id="field" value="{{newv.field}}">
+                                    <input type="hidden" name="job_role" id="job_role" value="{{newv.job_role}}">
+                                    <input type="hidden" name="contact" id="contact" value="{{newv.contact}}">
+                                    <input type="hidden" name="address" id="address" value="{{newv.address}}">
+                                  <!-- End of Title -->
+                                  <div class="row">
+                                      <div class="col-md-12">
+                                          <div class="mb-3">
+                                              {% comment %} <span class="h6 fw-bold">File Properties</span> {% endcomment %}
+                                          </div>
+                                          <ul>
+                                              <strong>{{accform.username}}</strong>
+                                              <strong>{{accform.email}}</strong>
+                                              <strong>{{accform.password1}}</strong>
+                                              <strong>{{accform.password2}}</strong>
+                                              <strong>{{updateform.profile_pic}}</strong>
+                                              
+                                          </ul>
+                                          
+                                      </div>
+                                      
+                                  </div>
+                                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                      <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-2">
+                                        <input type="submit" name="reg-verif" value="Daftarkan" class="btn btn-dark"></input>
+                                      </div>
+                                      {% comment %} <button type="button" class="btn btn-primary d-inline-flex align-items-center">
+                                          Download
+                                          <svg class="icon icon-xxs ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z" clip-rule="evenodd" /></svg>
+                                      </button> {% endcomment %}
+                                  </div>
+                                </form> 
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          
+      </div>
+      </div>
+    </div>
+    
+  </section>
+  <div class="modal fade" id="preview-modal" tabindex="-1" role="dialog" aria-labelledby="preview-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h6 modal-title">{{newv.nama_lengkap}}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <embed src="{{ newv.proof.url }}" type="application/pdf" height="500px" width="100%">
+                
+            </div>
+            <div class="modal-footer">
+                {% comment %} <button type="button" class="btn btn-secondary">Accept</button> {% endcomment %}
+                <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main><!-- End #main -->
+
+{% endblock content %}

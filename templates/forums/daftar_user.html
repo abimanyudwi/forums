@@ -1,0 +1,297 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+
+<main id="main">
+{% comment %} 
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li>Profil</li>
+      </ol>
+      <h2>Profil</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs --> {% endcomment %}
+
+  <!-- ======= Team Section ======= -->
+  <section class="gradient-custom-2 team" id="team">
+    <div class="container py-5" style="height:100%">
+      <div class="row d-flex justify-content-center align-items-center h-1000">
+        <div class="col col-lg-9 col-xl-12">
+          <div class="card">
+            <div class="rounded-top text-white d-flex flex-row" style="background-color: #303179; height:75px;">
+              <div class="ms-3 mt-4" >
+                <h5>Daftar User ({{num_author}})</h5>
+                <p class="fst-italic"></p>
+                
+              </div>
+            </div>
+            
+            <section id="portfolio" class="portfolio">
+              <div class="container ">
+                <div class="row portfolio-container ">
+                  <div class="portfolio-item filter-evaluasi ps-5 pe-5">
+                    <div class="table-responsive mt-4">
+                     
+                      <table class="table" id="table-author">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Nama Lengkap</th>
+                            <th scope="col">Poin</th>
+                            <th scope="col">Bergabung</th>
+                             <th scope="col">Syarat Verifikator</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+                          {% for author in author %}
+                          <tr>
+                              <td>{{forloop.counter}}</td>
+                              <td>{{author.user.username|title}}</td>
+                              <td><a href="{{author.get_url}}">{{author.fullname|title}}</a></td>
+                              <td>{{author.points}}</td>
+                              <td>{{author.created}}</td>
+                              <td>
+                                {% if author.points >= 3.5 %}
+                                  <span class="text-success"> Memenuhi </span>
+                                {% else %}
+                                  <span class="text-danger"> Belum Memenuhi </span>
+                                {% endif %}
+                              </td>
+                          </tr>
+                          {% endfor %}
+                          
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                      
+                    
+                  </div>
+          
+                </div>
+          
+              </div>
+            </section><!-- End Portfolio Section -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container py-5" style="height:100%">
+      <div class="row d-flex justify-content-center align-items-center h-1000">
+        <div class="col col-lg-9 col-xl-12">
+          <div class="card">
+            <div class="rounded-top text-white d-flex flex-row" style="background-color: #303179; height:75px;">
+              <div class="ms-3 mt-4" >
+                <h5>Daftar Verifikator ({{num_verifikator}})</h5>
+                <p class="fst-italic"></p>
+                
+              </div>
+            </div>
+            
+            <section id="portfolio" class="portfolio">
+              <div class="container ">
+                <div class="row portfolio-container ">
+                  <div class="portfolio-item filter-evaluasi ps-5 pe-5">
+                    
+                    <div class="table-responsive mt-4">
+                     
+                      <table class="table" id="table-verifikator">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Bergabung</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+                          {% for verifikator in verifikator %}
+                          <tr>
+                              <td>{{forloop.counter}}</td>
+                              <td>{{verifikator.username|title}}</a></td>
+                              
+                              <td>{{verifikator.date_joined}}</td>
+                              
+
+                          </tr>
+                          {% endfor %}
+                          
+                        </tbody>
+                      </table>
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#regModal">
+                          Tambah Verifikator Individual
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#orgModal">
+                          Tambah Verifikator Organisasi
+                        </button>
+                          {% comment %} <a href="{% url 'buat-terjemahan' %}" class="btn btn-secondary text-bg-secondary justify-content-md-end">Terjemahkan Artikel Ini</a> {% endcomment %}
+                      </div>
+                      
+                    </div>
+                      
+                    
+                  </div>
+          
+                </div>
+          
+              </div>
+            </section><!-- End Portfolio Section -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+     <!-- Modal -->
+     <div class="modal fade" id="regModal" tab index="-1" aria-labelledby="regModalLabel2" aria-hidden="true">
+      <div class="modal-dialog d-flex justify-content-center " data-bs-autohide="false">
+          <div class="modal-content w-75">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="regModalLabel2">Daftarkan Verifikator Individual</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body p-4">
+                <div class="row ">
+                  <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="tipe" id="tipe" value="Individual">
+                    <div class="col-lg-12 col-md-4">
+                      {% comment %} {% if accform.errors or indform.errors %}
+                                    {% for field, error in accform.errors.items %}
+                                        {% if field != '__all__' %}{% endif %}
+                                            <div class="text-danger">
+                                            {{ error | striptags }}
+                                            </div>
+                                    {% endfor %}
+                                    {% for field, error in indform.errors.items %}
+                                        {% if field != '__all__' %}{% endif %}
+                                            <div class="text-danger">
+                                            {{ error | striptags }}
+                                            </div>
+                                    {% endfor %}
+                      {% endif %} {% endcomment %}
+                      <!-- Name input -->
+                      <div class="form-outline mb-2">
+                        {{accform.username}}
+                      </div>
+                      <!-- Email input -->
+                      <div class="form-outline mb-2">
+                        {{accform.email}}
+
+                      </div>
+                      <!-- password input -->
+                      <div class="form-outline mb-2">
+                          {{accform.password1}}
+                      </div>
+                      <!-- password input -->
+                      <div class="form-outline mb-2">
+                          {{accform.password2}}
+                      </div>
+                      <!-- Name input -->
+                      <div class="form-outline mb-2">
+                        {{indform.fullname}}
+                      </div>
+                      <!-- Email input -->
+                      <div class="form-outline mb-2">
+                        {{indform.field}}
+
+                      </div>
+                      <!-- password input -->
+                      <div class="form-outline mb-2">
+                          {{indform.job_role}}
+                      </div>
+                      <!-- password input -->
+                      <div class="form-outline mb-2">
+                          {{indform.contact}}
+                      </div>
+                      <div class="form-outline mb-2">
+                          {{indform.address}}
+                      </div>
+                      <div class="form-outline mb-2">
+                          {{indform.profile_pic}}
+                      </div>
+                    </div>
+
+                      <!-- Submit button -->
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-2">
+                        <input type="submit" name="reg-ind" value="Daftarkan" class="btn btn-dark"></input>
+                      </div>
+                  </form>
+                </div>
+              </div>
+          </div>
+      </div>
+    </div>
+     <!-- Modal -->
+     <div class="modal fade" id="orgModal" tab index="-1" aria-labelledby="orgModalLabel2" aria-hidden="true">
+      <div class="modal-dialog d-flex justify-content-center " data-bs-autohide="false">
+          <div class="modal-content w-75">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="orgModalLabel2">Daftarkan Verifikator Organisasi</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body p-4">
+                <div class="row">
+                <form action="" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="hidden" name="tipe" id="tipe" value="Organisasi">
+                  <div class="col-lg-12 col-md-4">
+                    <!-- Name input -->
+                    <div class="form-outline mb-2">
+                      {{accform.username}}
+                    </div>
+                    <!-- Email input -->
+                    <div class="form-outline mb-2">
+                      {{accform.email}}
+
+                    </div>
+                    <!-- password input -->
+                    <div class="form-outline mb-2">
+                        {{accform.password1}}
+                    </div>
+                    <!-- password input -->
+                    <div class="form-outline mb-2">
+                        {{accform.password2}}
+                    </div>
+                    <!-- Name input -->
+                    <div class="form-outline mb-2">
+                      {{orgform.fullname}}
+                    </div>
+                    <!-- Email input -->
+                    <div class="form-outline mb-2">
+                      {{orgform.field}}
+                    </div>
+                    <!-- password input -->
+                    <div class="form-outline mb-2">
+                        {{orgform.contact}}
+                    </div>
+                    <div class="form-outline mb-2">
+                        {{orgform.address}}
+                    </div>
+                    <div class="form-outline mb-2">
+                        {{orgform.profile_pic}}
+                    </div>
+                  </div>
+                </div>
+                    <!-- Submit button -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-2">
+                      <input type="submit" name="reg-org" value="Daftarkan" class="btn btn-dark"></input>
+                    </div>
+                </form>
+              </div>
+          </div>
+      </div>
+    </div>
+</main><!-- End #main -->
+
+{% endblock content %}

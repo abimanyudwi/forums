@@ -1,0 +1,101 @@
+{% extends 'forums/base.html' %}
+{% block content %}
+{% load static %}
+{% load hitcount_tags %}
+
+<main id="main">
+{% comment %} 
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li>Profil</li>
+      </ol>
+      <h2>Profil</h2>
+
+    </div>
+  </section><!-- End Breadcrumbs --> {% endcomment %}
+
+  <!-- ======= Team Section ======= -->
+  <section class="h-100 gradient-custom-2 team" id="team">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-lg-9 col-xl-12">
+          <div class="card">
+            <div class="rounded-top text-white d-flex flex-row" style="background-color: #303179; height:200px;">
+              <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+                <img src="{{verifikator.profile_pic.url}}"
+                  alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2 member-img"
+                  style="width: 150px; z-index: 1">
+                
+              </div>
+              <div class="ms-3" style="margin-top: 130px;">
+                <h5>@{{verifikator.user.username|lower}}</h5>
+                <p class="fst-italic">{{verifikator.user.role|lower|capfirst}}</p>
+                
+              </div>
+            </div>
+            <div class="p-4 text-black" style="background-color: #f8f9fa;">
+              <div class="d-flex justify-content-end text-center py-1">
+                
+                <div>
+                  <p class="mb-1 h5">{{ev_count}}</p>
+                  <p class="small text-muted mb-0">Penilaian</p>
+                </div>
+                
+              </div>
+              
+            </div>
+            <section id="portfolio" class="portfolio">
+              <div class="container">
+                 
+                <div class="row portfolio-container">
+                  
+                  <div class="portfolio-item filter-evaluasi">
+                    
+                    <table class="table align-middle my-2 px-4">
+                       <!-- Tabel Unggahan -->
+                       <thead class="table-secondary border-start border-end">
+                        <tr>
+                          
+                            <th scope="col" colspan="6" >Unggahan dengan Terjemahan yang Dinilai</th>
+                           
+                        </tr>
+                      </thead>
+                      <thead class="">
+                        <tr class="" style="display:none;">
+                         
+                          <th scope="col"></th>
+                          <th scope="col"></th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-borderless">
+                        {% for trns in trans %}
+                            <tr>
+                              <td><a href="{% url 'unggahan' trns|slugify %}">{{trns|safe}}</a></td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    <!-- End Tabel Unggahan -->
+                    </table>
+                      
+                    
+                  </div>
+          
+                </div>
+          
+              </div>
+            </section><!-- End Portfolio Section -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</main><!-- End #main -->
+
+{% endblock content %}
